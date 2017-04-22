@@ -31,17 +31,17 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     html
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     helm
      auto-completion
      ;; better-defaults
      emacs-lisp
      git
+     html
+     helm
      markdown
      (org :variables
           org-enable-bootstrap-support t
@@ -312,51 +312,7 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-
-  (set-frame-parameter (selected-frame) 'alpha '(95 . 80))
-
-  (remove-hook 'prog-mode-hook #'smartparens-mode)
-  (spacemacs/toggle-smartparens-globally-off)
-
-  (require 'bm)
-  (define-key evil-normal-state-map (kbd "M-b") 'bm-toggle)
-  (define-key evil-normal-state-map (kbd "<left>") 'bm-previous)
-  (define-key evil-normal-state-map (kbd "<right>") 'bm-next)
-
-  (require 'key-chord)
-  (key-chord-mode t)
-  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-
-  (setq evil-escape-key-sequence ",.")
-  (define-key evil-normal-state-map "L" 'evil-end-of-line)
-  (define-key evil-normal-state-map "H" 'evil-beginning-of-line)
-  (define-key evil-normal-state-map (kbd "C-h") 'evil-prev-buffer)
-  (define-key evil-normal-state-map (kbd "C-l") 'evil-next-buffer)
-  (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
-  (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
-  (define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
-  (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
-
-  (require 'engine-mode)
-  (engine-mode 1)
-  (defengine google "https://google.com/search?q=%s" :keybinding "g")
-  (engine/set-keymap-prefix (kbd "M-/"))
-
-  ;; ORG-MODE SETTINGS ;;
-  (setq org-todo-keywords
-        '((sequence "TODO" "WAITING" "|" "DONE" "CANCELLED")))
-  (setq org-enforce-todo-dependencies t)
-  (setq org-ellipsis " ▼")
-  (setq org-reveal-root "~/org/reveal.js/")
-
-  (require 'eyuml)
-
-  ;; Web mode settings
-  (require 'web-mode)
-  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.json\\'" . web-mode))
+  (org-babel-load-file "~/dotfiles/emacs.config.org")
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -368,7 +324,7 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (bm web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data ox-twbs ox-reveal eyuml xterm-color smeargle shell-pop orgit org-projectile org-present org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow key-chord htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help engine-mode company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
+    (sublimity bm web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data ox-twbs ox-reveal eyuml xterm-color smeargle shell-pop orgit org-projectile org-present org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow key-chord htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help engine-mode company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
