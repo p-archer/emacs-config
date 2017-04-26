@@ -2,11 +2,13 @@
 #+AUTHOR: Carnifex
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
 
-* Gui setup
-  Transparency for the window.
-  #+BEGIN_SRC emacs-lisp
-  (set-frame-parameter (selected-frame) 'alpha '(95 . 80))
-  #+END_SRC
+* UI setup
+ Config for general usage.
+** Window settings
+   Transparency for the window.
+   #+BEGIN_SRC emacs-lisp
+   (set-frame-parameter (selected-frame) 'alpha '(95 . 80))
+   #+END_SRC
 ** Whitespaces
    #+BEGIN_SRC emacs-lisp
    (setq whitespace-style '(face tabs tab-mark trailing))
@@ -59,7 +61,7 @@
   (require 'eyuml)
    #+END_SRC
 ** Engine mode
-   Package to call search engines.
+   Package to search in browser.
    #+BEGIN_SRC emacs-lisp
    (require 'engine-mode)
    (engine-mode 1)
@@ -67,7 +69,7 @@
    (engine/set-keymap-prefix (kbd "M-/"))
    #+END_SRC
 ** Org settings
-   Basic general org settings
+   Basic general org settings.
    #+BEGIN_SRC emacs-lisp
    (setq org-todo-keywords
          '((sequence "TODO" "WAITING" "|" "DONE" "CANCELLED")))
@@ -77,12 +79,5 @@
    #+END_SRC
 ** Web mode
    #+BEGIN_SRC emacs-lisp
-   (require 'web-mode)
-   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
-   (add-to-list 'auto-mode-alist '("\\.json\\'" . web-mode))
    #+END_SRC
-
-
 
