@@ -55,6 +55,16 @@
   (define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
   (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
   (define-key evil-normal-state-map (kbd "<tab>") 'evil-toggle-fold)
+
+  (defun open-custom-config ()
+	(interactive)
+	(find-file "~/emacs-config/emacs.config.org"))
+  (defun open-main-org-file ()
+	(interactive)
+	(find-file "~/org/main.org"))
+  (spacemacs/set-leader-keys
+	"few" 'open-custom-config
+	"feo" 'open-main-org-file)
   #+END_SRC
 * Packages
 ** yuml
@@ -78,6 +88,12 @@
    (setq org-enforce-todo-dependencies t)
    (setq org-ellipsis " ▼")
    (setq org-reveal-root "~/org/reveal.js/")
+
+   (setq org-capture-templates
+		'(("t" "Todo" entry (file+headline "~/org/main.org" "Tasks")
+		   "* TODO %?\n  added: %U")
+		  ("T" "Linked todo" entry (file+datetree "~/org/scheduled.org")
+		   "* TODO %?\n  added: %U\n  from: [[%F]]")))
    #+END_SRC
 ** Web mode
    #+BEGIN_SRC emacs-lisp
