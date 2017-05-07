@@ -91,9 +91,9 @@
 
    (setq org-capture-templates
 		'(("t" "Todo" entry (file+headline "~/org/main.org" "Tasks")
-		   "* TODO %?\n  added: %U")
+		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H%M>\n  :END:")
 		  ("T" "Linked todo" entry (file+datetree "~/org/scheduled.org")
-		   "* TODO %?\n  added: %U\n  from: [[%F]]")))
+		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :From: [[%F]]\n  :END:\n%^{Effort}p")))
    #+END_SRC
 ** Web mode
    #+BEGIN_SRC emacs-lisp
