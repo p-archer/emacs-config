@@ -35,6 +35,7 @@
    #+BEGIN_SRC emacs-lisp
    (require 'bm)
    (define-key evil-normal-state-map (kbd "M-b") 'bm-toggle)
+   (define-key evil-normal-state-map (kbd "M-m") 'bm-toggle)
    (define-key evil-normal-state-map (kbd "<left>") 'bm-previous)
    (define-key evil-normal-state-map (kbd "<right>") 'bm-next)
    #+END_SRC
@@ -67,11 +68,6 @@
 	"feo" 'open-main-org-file)
   #+END_SRC
 * Packages
-** yuml
-   This package will send the markup to yuml.me and download the result.
-   #+BEGIN_SRC emacs-lisp
-  (require 'eyuml)
-   #+END_SRC
 ** Engine mode
    Package to search in browser.
    #+BEGIN_SRC emacs-lisp
@@ -94,6 +90,21 @@
 		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H%M>\n  :END:")
 		  ("T" "Linked todo" entry (file+datetree "~/org/scheduled.org")
 		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :From: [[%F]]\n  :END:\n%^{Effort}p")))
+   #+END_SRC
+** Prettify symbols
+   Replace keywords with symbols
+   #+BEGIN_SRC emacs-lisp
+  (add-hook 'js2-mode-hook
+			(lambda ()
+			  (push '("function" . ?ƒ) prettify-symbols-alist)
+			  (push '("this" . ?@) prettify-symbols-alist)
+			  (push '("null" . ?∅) prettify-symbols-alist)
+			  (push '("undefined" . ?∄) prettify-symbols-alist)
+			  (push '("return" . ?⇐) prettify-symbols-alist)
+			  (push '("=>" . ?⇒) prettify-symbols-alist)
+			  (push '("prototype" . ?Ω) prettify-symbols-alist)
+			  (remove-duplicates prettify-symbols-alist :test string=)))
+  (global-prettify-symbols-mode 1)
    #+END_SRC
 ** Web mode
    #+BEGIN_SRC emacs-lisp
