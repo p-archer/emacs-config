@@ -62,9 +62,13 @@
 	(find-file "~/emacs-config/emacs.config.org"))
   (defun open-main-org-file ()
 	(interactive)
+	(find-file "~/org/scheduled.org"))
+  (defun open-main-org-file ()
+	(interactive)
 	(find-file "~/org/main.org"))
   (spacemacs/set-leader-keys
 	"few" 'open-custom-config
+	"few" 'open-scheduled-org-file
 	"feo" 'open-main-org-file)
   #+END_SRC
 * Packages
@@ -88,7 +92,7 @@
    (setq org-capture-templates
 		'(("t" "Todo" entry (file+headline "~/org/main.org" "Tasks")
 		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H%M>\n  :END:")
-		  ("T" "Linked todo" entry (file+datetree "~/org/scheduled.org")
+		  ("w" "Work todo" entry (file+datetree "~/org/scheduled.org")
 		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :From: [[%F]]\n  :END:\n%^{Effort}p")))
    #+END_SRC
 ** Prettify symbols
