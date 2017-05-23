@@ -18,7 +18,6 @@
    #+END_SRC
 ** AutoComplete
    #+BEGIN_SRC emacs-lisp
-   (setq ac-auto-show-menu 0.8)
    #+END_SRC
 ** Remove smart parens
    #+BEGIN_SRC emacs-lisp
@@ -112,5 +111,7 @@
    #+END_SRC
 ** Web mode
    #+BEGIN_SRC emacs-lisp
+   (setq web-mode-auto-pairing nil)
+   (setq web-mode-enable-css-colorization t)
    #+END_SRC
 
