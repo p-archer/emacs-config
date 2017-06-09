@@ -54,8 +54,11 @@ values."
           org-enable-reveal-js-support t)
      plantuml
      (shell :variables
+			shell-default-term-shell '("c:/Program Files/Git/bin/bash.exe")
+			shell-default-shell 'shell
             shell-default-height 30
-            shell-default-position 'bottom)
+			shell-default-full-span nil
+            shell-default-position 'full)
      ;; spell-checking
      syntax-checking
      ;; version-control
