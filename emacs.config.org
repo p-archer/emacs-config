@@ -19,7 +19,7 @@
 ** AutoComplete
    #+BEGIN_SRC emacs-lisp
    #+END_SRC
-** Remove smart parens
+** Remove smartparens
    #+BEGIN_SRC emacs-lisp
    (remove-hook 'prog-mode-hook #'smartparens-mode)
    (spacemacs/toggle-smartparens-globally-off)
@@ -59,6 +59,9 @@
   (defun open-custom-config ()
 	(interactive)
 	(find-file "~/emacs-config/emacs.config.org"))
+  (defun open-scheduled-org-file ()
+	(interactive)
+	(find-file "~/org/scheduled.org"))
   (defun open-main-org-file ()
 	(interactive)
 	(find-file "~/org/scheduled.org"))
@@ -67,7 +70,7 @@
 	(find-file "~/org/main.org"))
   (spacemacs/set-leader-keys
 	"few" 'open-custom-config
-	"few" 'open-scheduled-org-file
+	"fes" 'open-scheduled-org-file
 	"feo" 'open-main-org-file)
   #+END_SRC
 * Packages
@@ -79,6 +82,39 @@
    (defengine google "https://google.com/search?q=%s" :keybinding "g")
    (engine/set-keymap-prefix (kbd "M-/"))
    #+END_SRC
+** ESlint
+   #+BEGIN_SRC emacs-elisp
+  (setq flycheck-eslintrc "~/.eslintrc")
+  (flycheck-define-checker eslint-js
+	"custom eslint checker, since the original one does not work (windows)"
+	:command("eslint" "--format" "unix"
+			 (config-file "--config" flycheck-eslintrc)
+			 source-original)
+	:standard-input t
+	:error-patterns
+	 ((error line-start (file-name) ":" line ":" column ":" (message) line-end))
+	:modes (js-mode js2-mode))
+
+  (add-to-list 'flycheck-checkers 'eslint-js)
+  ;; (setq-default flycheck-disabled-checkers '(javascript-eslint))
+   #+END_SRC
+** JS2-mode
+   #+BEGIN_SRC emacs-elisp
+   (add-hook 'js2-mode-hook 'auto-complete-mode)
+   (setq js2-mode-display-warnings-and-errors nil)
+   (setq js2-mode-show-parse-errors nil)
+   (setq js2-mode-show-strict-warnings nil)
+   #+END_SRC
+** Markdown
+   #+BEGIN_SRC emacs-elisp
+  (custom-set-variables
+   '(markdown-command "github-markdown-render"))
+   #+END_SRC
+** Neotree
+   #+BEGIN_SRC emacs-elisp
+   (setq neo-theme 'ascii)
+   (global-set-key [f2] 'neotree-toggle)
+   #+END_SRC
 ** Org settings
    Basic general org settings.
    #+BEGIN_SRC emacs-lisp
@@ -86,13 +122,15 @@
          '((sequence "TODO" "WAITING" "|" "DONE" "CANCELLED")))
    (setq org-enforce-todo-dependencies t)
    (setq org-ellipsis " ▼")
-   (setq org-reveal-root "~/org/reveal.js/")
+   (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
 
    (setq org-capture-templates
-		'(("t" "Todo" entry (file+headline "~/org/main.org" "Tasks")
-		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H%M>\n  :END:")
-		  ("w" "Work todo" entry (file+datetree "~/org/scheduled.org")
-		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :From: [[%F]]\n  :END:\n%^{Effort}p")))
+		'(("t" "todo" entry (file+headline "~/org/main.org" "Tasks")
+		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H:%M>\n  :END:")
+		  ("w" "work todo" entry (file+datetree "~/org/scheduled.org")
+		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
+		  ("l" "linked work todo" entry (file+datetree "~/org/scheduled.org")
+		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :Link: %a\n  :END:\n%^{Effort}p")))
    #+END_SRC
 ** Prettify symbols
    Replace keywords with symbols
@@ -114,4 +152,3 @@
    (setq web-mode-auto-pairing nil)
    (setq web-mode-enable-css-colorization t)
    #+END_SRC
-
