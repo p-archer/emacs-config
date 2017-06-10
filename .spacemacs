@@ -45,21 +45,19 @@ values."
 	 graphviz
      html
      helm
-     (javascript :variables
-				 tern-command '("c:/Users/Peter/AppData/Roaming/npm/tern.cmd")
-				 javascript-disable-tern-port-files nil)
+	 javascript
      markdown
      (org :variables
           org-enable-bootstrap-support t
           org-enable-reveal-js-support t)
      plantuml
+	 python
      (shell :variables
-			shell-default-term-shell '("c:/Program Files/Git/bin/bash.exe")
 			shell-default-shell 'shell
             shell-default-height 30
 			shell-default-full-span nil
             shell-default-position 'full)
-     ;; spell-checking
+     spell-checking
      syntax-checking
      ;; version-control
      )
@@ -67,7 +65,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(add-node-modules-path key-chord engine-mode bm eyuml evil-snipe tern-auto-complete)
+   dotspacemacs-additional-packages '(key-chord engine-mode bm tern-auto-complete)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.

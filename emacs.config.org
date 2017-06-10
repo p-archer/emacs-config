@@ -93,7 +93,7 @@
 	:modes (js-mode js2-mode))
 
   (add-to-list 'flycheck-checkers 'eslint-js)
-  (setq-default flycheck-disabled-checkers '(javascript-eslint))
+  ;; (setq-default flycheck-disabled-checkers '(javascript-eslint))
    #+END_SRC
 ** JS2-mode
    #+BEGIN_SRC emacs-elisp
@@ -123,7 +123,7 @@
 
    (setq org-capture-templates
 		'(("t" "todo" entry (file+headline "~/org/main.org" "Tasks")
-		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H%M>\n  :END:")
+		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H:%M>\n  :END:")
 		  ("w" "work todo" entry (file+datetree "~/org/scheduled.org")
 		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
 		  ("l" "linked work todo" entry (file+datetree "~/org/scheduled.org")
@@ -146,4 +146,6 @@
    #+END_SRC
 ** Web mode
    #+BEGIN_SRC emacs-lisp
+   (setq web-mode-auto-pairing nil)
+   (setq web-mode-enable-css-colorization t)
    #+END_SRC
