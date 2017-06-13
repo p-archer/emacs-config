@@ -134,4 +134,6 @@
    #+END_SRC
 ** Web mode
    #+BEGIN_SRC emacs-lisp
+   (add-hook 'web-mode-hook (lambda () (company-web-mode -1)))
+   (add-hook 'web-mode-hook (lambda () (whitespace-mode t)))
    #+END_SRC
