@@ -18,6 +18,7 @@
    #+END_SRC
 ** AutoComplete
    #+BEGIN_SRC emacs-lisp
+     ;; (add-to-list 'company-backends 'company-tern)
    #+END_SRC
 ** Remove smartparens
    #+BEGIN_SRC emacs-lisp
@@ -38,6 +39,19 @@
    (define-key evil-normal-state-map (kbd "<left>") 'bm-previous)
    (define-key evil-normal-state-map (kbd "<right>") 'bm-next)
    #+END_SRC
+** Windows settings
+*** Bash shell
+	Set git bash as default shell.
+	#+BEGIN_SRC emacs-lisp
+	  ;; (setq explicit-shell-file-name "C:\\Program Files\\git\\bin\\bash.exe")
+	  ;; (setq shell-file-name explicit-shell-file-name)
+	  ;; (add-to-list 'exec-path "c:\\Program Files\\Git\\bin")
+	#+END_SRC
+*** Tramp with putty
+	Set git bash as default shell.
+	#+BEGIN_SRC emacs-lisp
+	(set-default 'tramp-default-method "plink")
+	#+END_SRC
 * Key bindings
   #+BEGIN_SRC emacs-lisp
   (require 'key-chord)
@@ -56,19 +70,28 @@
   (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
   (define-key evil-normal-state-map (kbd "<tab>") 'evil-toggle-fold)
 
+  (setq ssh-method "/plink")
+  (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
+  (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
+  (setq org-general-file (concat aws-url "/home/carnifex/org/general.org"))
+  (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
   (defun open-custom-config ()
 	(interactive)
 	(find-file "~/emacs-config/emacs.config.org"))
-  (defun open-scheduled-org-file ()
+  (defun open-general-org-file ()
 	(interactive)
-	(find-file "~/org/scheduled.org"))
-  (defun open-main-org-file ()
+	(find-file org-general-file))
+  (defun open-work-org-file ()
 	(interactive)
-	(find-file "~/org/main.org"))
+	(find-file org-work-file))
+  (defun open-ideas-org-file ()
+	(interactive)
+	(find-file org-ideas-file))
   (spacemacs/set-leader-keys
-	"few" 'open-custom-config
-	"fes" 'open-scheduled-org-file
-	"feo" 'open-main-org-file)
+	"feD" 'open-custom-config
+	"feg" 'open-general-org-file
+	"few" 'open-work-org-file
+	"fei" 'open-ideas-org-file)
   #+END_SRC
 * Packages
 ** Engine mode
@@ -110,12 +133,14 @@
    (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
 
    (setq org-capture-templates
-		'(("t" "todo" entry (file+headline "~/org/main.org" "Tasks")
+		'(("t" "todo" entry (file+datetree org-general-file)
 		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H%M>\n  :END:")
-		  ("w" "work todo" entry (file+datetree "~/org/scheduled.org")
+		  ("w" "work todo" entry (file+datetree org-work-file)
 		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
-		  ("l" "linked work todo" entry (file+datetree "~/org/scheduled.org")
-		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :Link: %a\n  :END:\n%^{Effort}p")))
+		  ("l" "linked work todo" entry (file+datetree org-work-file)
+		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :Link: %a\n  :END:\n%^{Effort}p")
+		  ("i" "idea" entry (file+headline org-ideas-file)
+		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n")))
    #+END_SRC
 ** Prettify symbols
    Replace keywords with symbols
@@ -129,11 +154,19 @@
 			  (push '("return" . ?⇐) prettify-symbols-alist)
 			  (push '("=>" . ?⇒) prettify-symbols-alist)
 			  (push '("prototype" . ?Ω) prettify-symbols-alist)))
-			  ;; (remove-duplicates prettify-symbols-alist :test string=)))
+			  ;; (remove-duplicates prettify-symbols-alist :test 'string=)))
+
   (global-prettify-symbols-mode 1)
+   #+END_SRC
+** Search tools
+   #+BEGIN_SRC emacs_lisp
+   (setq helm-ag-base-command "c:\\emacs\\bin\\ag --vimgrep")
    #+END_SRC
 ** Web mode
    #+BEGIN_SRC emacs-lisp
-   (add-hook 'web-mode-hook (lambda () (company-web-mode -1)))
+   ;; (add-hook 'web-mode-hook (lambda () (company-web-mode -1)))
    (add-hook 'web-mode-hook (lambda () (whitespace-mode t)))
+   (add-hook 'less-mode-hook (lambda () (whitespace-mode t)))
+   (add-hook 'css-mode-hook (lambda () (whitespace-mode t)))
    #+END_SRC
+   
