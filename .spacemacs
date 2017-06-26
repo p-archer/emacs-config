@@ -49,19 +49,19 @@ values."
      html
      helm
 	 ibuffer
-     javascript
+	 javascript
      markdown
      (org :variables
           org-enable-bootstrap-support t
           org-enable-reveal-js-support t)
      plantuml
+	 python
      (shell :variables
-			shell-default-term-shell "c:\\Program Files\\Git\\bin\\bash.exe"
 			shell-default-shell 'shell
             shell-default-height 30
 			shell-default-full-span nil
             shell-default-position 'full)
-     ;; spell-checking
+     spell-checking
      syntax-checking
 	 ;; themes-megapack
      ;; version-control
