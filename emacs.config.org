@@ -4,32 +4,17 @@
 
 * UI setup
  Config for general usage.
-** Window settings
-   Transparency for the window.
-   #+BEGIN_SRC emacs-lisp
-   (set-frame-parameter (selected-frame) 'alpha '(95 . 80))
-   #+END_SRC
-** Whitespaces
-   #+BEGIN_SRC emacs-lisp
-   (setq whitespace-style '(face tabs tab-mark trailing))
-   (setq whitespace-display-mappings
-		 '((space-mark 32 [183])
-		   (tab-mark 9 [124 9])))
-   #+END_SRC
-** AutoComplete
-   #+BEGIN_SRC emacs-lisp
-     ;; (add-to-list 'company-backends 'company-tern)
-   #+END_SRC
-** Remove smartparens
-   #+BEGIN_SRC emacs-lisp
-   (remove-hook 'prog-mode-hook #'smartparens-mode)
-   (spacemacs/toggle-smartparens-globally-off)
-   #+END_SRC
 ** Indentation
    Use tabs, force tab-width 4.
    #+BEGIN_SRC emacs-lisp
    (setq-default indent-tabs-mode t)
    (setq-default tab-width 4)
+   #+END_SRC
+** Remove smartparens
+   #+BEGIN_SRC emacs-lisp
+   (remove-hook 'prog-mode-hook #'smartparens-mode)
+   (spacemacs/toggle-smartparens-globally-off)
+   (smartparens-global-mode -1)
    #+END_SRC
 ** Visual bookmarks
    #+BEGIN_SRC emacs-lisp
@@ -39,27 +24,44 @@
    (define-key evil-normal-state-map (kbd "<left>") 'bm-previous)
    (define-key evil-normal-state-map (kbd "<right>") 'bm-next)
    #+END_SRC
+** Whitespaces
+   #+BEGIN_SRC emacs-lisp
+   (setq whitespace-style '(face tabs tab-mark trailing))
+   (setq whitespace-display-mappings
+		 '((space-mark 32 [183])
+		   (tab-mark 9 [124 9])))
+   #+END_SRC
+** Window settings
+   Transparency for the window.
+   #+BEGIN_SRC emacs-lisp
+   (set-frame-parameter (selected-frame) 'alpha '(95 . 80))
+   #+END_SRC
 ** Windows settings
 *** Bash shell
 	Set git bash as default shell.
 	#+BEGIN_SRC emacs-lisp
-	  ;; (setq explicit-shell-file-name "C:\\Program Files\\git\\bin\\bash.exe")
-	  ;; (setq shell-file-name explicit-shell-file-name)
-	  ;; (add-to-list 'exec-path "c:\\Program Files\\Git\\bin")
+	(if (eq system-type 'windows-nt)
+	    (setq explicit-shell-file-name "C:\\Program Files\\git\\bin\\bash.exe")
+		(setq shell-file-name explicit-shell-file-name)
+	    (add-to-list 'exec-path "c:\\Program Files\\Git\\bin")
+	)
 	#+END_SRC
 *** Tramp with putty
 	Set git bash as default shell.
 	#+BEGIN_SRC emacs-lisp
-	;; (set-default 'tramp-default-method "plink")
+	(if (eq system-type 'windows-nt)
+	    (set-default 'tramp-default-method "plink")
+    )
+	#+END_SRC
+*** Search tools
+	#+BEGIN_SRC emacs-lisp
+	(if (eq system-type 'windows-nt)
+	   (setq helm-ag-base-command "c:\\emacs\\bin\\ag --vimgrep")
+	 )
 	#+END_SRC
 * Key bindings
+** General key bindings
   #+BEGIN_SRC emacs-lisp
-  (require 'key-chord)
-  (key-chord-mode t)
-  (setq key-chord-two-keys-delay 0.5)
-  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-  (key-chord-define evil-insert-state-map ",." 'evil-normal-state)
-
   (define-key evil-normal-state-map "L" 'evil-end-of-line)
   (define-key evil-normal-state-map "H" 'evil-beginning-of-line)
   (define-key evil-normal-state-map (kbd "C-h") 'evil-prev-buffer)
@@ -69,24 +71,17 @@
   (define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
   (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
   (define-key evil-normal-state-map (kbd "<tab>") 'evil-toggle-fold)
-
-  (setq ssh-method "/ssh")
-  (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
-  (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
-  (setq org-general-file (concat aws-url "/home/carnifex/org/general.org"))
-  (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
-  (defun open-custom-config ()
-	(interactive)
-	(find-file "~/emacs-config/emacs.config.org"))
-  (defun open-general-org-file ()
-	(interactive)
-	(find-file org-general-file))
-  (defun open-work-org-file ()
-	(interactive)
-	(find-file org-work-file))
-  (defun open-ideas-org-file ()
-	(interactive)
-	(find-file org-ideas-file))
+  #+END_SRC
+** Key chord escapes
+  #+BEGIN_SRC emacs-lisp
+  (require 'key-chord)
+  (key-chord-mode t)
+  (setq key-chord-two-keys-delay 0.5)
+  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+  (key-chord-define evil-insert-state-map ",." 'evil-normal-state)
+  #+END_SRC
+** Org file shortcuts
+  #+BEGIN_SRC emacs-lisp
   (spacemacs/set-leader-keys
 	"feD" 'open-custom-config
 	"feg" 'open-general-org-file
@@ -94,6 +89,7 @@
 	"fei" 'open-ideas-org-file)
   #+END_SRC
 * Packages
+  Configuration for used packages.
 ** Engine mode
    Package to search in browser.
    #+BEGIN_SRC emacs-lisp
@@ -179,10 +175,26 @@
 
   (global-prettify-symbols-mode 1)
    #+END_SRC
-** Search tools
-   #+BEGIN_SRC emacs_lisp
-   (setq helm-ag-base-command "c:\\emacs\\bin\\ag --vimgrep")
-   #+END_SRC
+** Tramp settings
+  #+BEGIN_SRC emacs-lisp
+  (setq ssh-method "/ssh")
+  (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
+  (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
+  (setq org-general-file (concat aws-url "/home/carnifex/org/general.org"))
+  (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
+  (defun open-custom-config ()
+	(interactive)
+	(find-file "~/emacs-config/emacs.config.org"))
+  (defun open-general-org-file ()
+	(interactive)
+	(find-file org-general-file))
+  (defun open-work-org-file ()
+	(interactive)
+	(find-file org-work-file))
+  (defun open-ideas-org-file ()
+	(interactive)
+	(find-file org-ideas-file))
+  #+END_SRC
 ** Web mode
    #+BEGIN_SRC emacs-lisp
    ;; (add-hook 'web-mode-hook (lambda () (company-web-mode -1)))
