@@ -12,9 +12,16 @@
    #+END_SRC
 ** Remove smartparens
    #+BEGIN_SRC emacs-lisp
+   ;; feeble attempt to get rid of the annoying smartparens
    (remove-hook 'prog-mode-hook #'smartparens-mode)
    (spacemacs/toggle-smartparens-globally-off)
    (smartparens-global-mode -1)
+   (smartparens-mode -1)
+
+   ;; make sure whitespaces are shown in the following modes
+   (add-hook 'web-mode-hook (lambda () (smartparens-mode -1)))
+   (add-hook 'less-mode-hook (lambda () (smartparent-mode -1)))
+   (add-hook 'css-mode-hook (lambda () (smartparent-mode -1)))
    #+END_SRC
 ** Visual bookmarks
    #+BEGIN_SRC emacs-lisp
@@ -30,6 +37,11 @@
    (setq whitespace-display-mappings
 		 '((space-mark 32 [183])
 		   (tab-mark 9 [124 9])))
+
+   ;; make sure whitespaces are shown in the following modes
+   (add-hook 'web-mode-hook (lambda () (whitespace-mode t)))
+   (add-hook 'less-mode-hook (lambda () (whitespace-mode t)))
+   (add-hook 'css-mode-hook (lambda () (whitespace-mode t)))
    #+END_SRC
 ** Window settings
    Transparency for the window.
@@ -195,10 +207,3 @@
 	(interactive)
 	(find-file org-ideas-file))
   #+END_SRC
-** Web mode
-   #+BEGIN_SRC emacs-lisp
-   ;; (add-hook 'web-mode-hook (lambda () (company-web-mode -1)))
-   (add-hook 'web-mode-hook (lambda () (whitespace-mode t)))
-   (add-hook 'less-mode-hook (lambda () (whitespace-mode t)))
-   (add-hook 'css-mode-hook (lambda () (whitespace-mode t)))
-   #+END_SRC
