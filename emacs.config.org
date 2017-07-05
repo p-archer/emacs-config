@@ -14,7 +14,7 @@
    #+BEGIN_SRC emacs-lisp
    ;; feeble attempt to get rid of the annoying smartparens
    (remove-hook 'prog-mode-hook #'smartparens-mode)
-   (spacemacs/toggle-smartparens-globally-off)
+   ;; (spacemacs/toggle-smartparens-globally-off)
    (smartparens-global-mode -1)
    (smartparens-mode -1)
 
