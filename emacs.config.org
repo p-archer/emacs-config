@@ -53,23 +53,29 @@
 	Set git bash as default shell.
 	#+BEGIN_SRC emacs-lisp
 	(if (eq system-type 'windows-nt)
-	    (setq explicit-shell-file-name "C:\\Program Files\\git\\bin\\bash.exe")
-		(setq shell-file-name explicit-shell-file-name)
-	    (add-to-list 'exec-path "c:\\Program Files\\Git\\bin")
-	)
+	    (progn
+		  (setq explicit-shell-file-name "C:\\Program Files\\git\\bin\\bash.exe")
+		  (setq shell-file-name explicit-shell-file-name)
+	      (add-to-list 'exec-path "c:\\Program Files\\Git\\bin")
+		  (print "changed default shell for windows"))
+	  )
 	#+END_SRC
 *** Tramp with putty
 	Set git bash as default shell.
 	#+BEGIN_SRC emacs-lisp
 	(if (eq system-type 'windows-nt)
-	    (set-default 'tramp-default-method "plink")
-    )
+	    (progn
+	      (set-default 'tramp-default-method "plink")
+		  (print "changed default method for tramp"))
+      )
 	#+END_SRC
 *** Search tools
 	#+BEGIN_SRC emacs-lisp
 	(if (eq system-type 'windows-nt)
-	   (setq helm-ag-base-command "c:\\emacs\\bin\\ag --vimgrep")
-	 )
+	    (progn
+	      (setq helm-ag-base-command "c:\\emacs\\bin\\ag --vimgrep")
+		  (print "changed default method for search"))
+	  )
 	#+END_SRC
 * Key bindings
 ** General key bindings
@@ -150,6 +156,10 @@
    #+BEGIN_SRC emacs-lisp
   (custom-set-variables
    '(markdown-command "github-markdown-render"))
+   #+END_SRC
+** Magit
+   #+BEGIN_SRC emacs-lisp
+   (setq-default git-magit-status-fullscreen 1)
    #+END_SRC
 ** Neotree
    #+BEGIN_SRC emacs-lisp
