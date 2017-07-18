@@ -1,4 +1,4 @@
-#+TITLE: emacs config
+#+TITLE: Emacs config
 #+AUTHOR: Carnifex
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
 
@@ -42,6 +42,7 @@
    (add-hook 'web-mode-hook (lambda () (whitespace-mode t)))
    (add-hook 'less-mode-hook (lambda () (whitespace-mode t)))
    (add-hook 'css-mode-hook (lambda () (whitespace-mode t)))
+   (add-hook 'js-jsx-mode-hook (lambda () (whitespace-mode t)))
    #+END_SRC
 ** Window settings
    Transparency for the window.
@@ -57,25 +58,23 @@
 		  (setq explicit-shell-file-name "C:\\Program Files\\git\\bin\\bash.exe")
 		  (setq shell-file-name explicit-shell-file-name)
 	      (add-to-list 'exec-path "c:\\Program Files\\Git\\bin")
-		  (print "changed default shell for windows"))
-	  )
+		  (print "changed default shell for windows")))
 	#+END_SRC
 *** Tramp with putty
-	Set git bash as default shell.
+	Set plink as default tramp method.
 	#+BEGIN_SRC emacs-lisp
 	(if (eq system-type 'windows-nt)
 	    (progn
 	      (set-default 'tramp-default-method "plink")
-		  (print "changed default method for tramp"))
-      )
+		  (print "changed default method for tramp")))
 	#+END_SRC
 *** Search tools
+	Set silver-searcher as default text-search program.
 	#+BEGIN_SRC emacs-lisp
 	(if (eq system-type 'windows-nt)
 	    (progn
 	      (setq helm-ag-base-command "c:\\emacs\\bin\\ag --vimgrep")
-		  (print "changed default method for search"))
-	  )
+		  (print "changed default method for search")))
 	#+END_SRC
 * Key bindings
 ** General key bindings
@@ -123,23 +122,10 @@
 ** Flyspell auto-correct
    #+BEGIN_SRC emacs-lisp
    (spacemacs/set-leader-keys
-   "SC" 'ispell-fix-then-abbrev)
+   "SC" 'custom/ispell-fix-then-abbrev)
 
-   (defun ispell-fix-then-abbrev (p)
-	"Fix mispelled word with ispell-word, then create an abbrevation for that."
-	(interactive "P")
-	(let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
-	  (call-interactively 'ispell-word)
-	  (setq aft (downcase (or (thing-at-point 'word) "")))
-	  (unless (string= aft bef)
-		(message "\"%s\" now expands to \"%s\" %sally"
-				 bef aft (if p "loc" "glob")
-				 (define-abbrev
-				   (if p local-abbrev-table global-abbrev-table)
-				   bef aft)))))
-
-	(setq save-abbrevs t)
-	(setq-default abbrev-mode t)
+   (setq save-abbrevs t)
+   (setq-default abbrev-mode t)
    #+END_SRC
 ** Ispell dictionary
    #+BEGIN_SRC emacs-lisp
@@ -170,7 +156,7 @@
    Basic general org settings.
    #+BEGIN_SRC emacs-lisp
    (setq org-todo-keywords
-         '((sequence "TODO" "WAITING" "|" "DONE" "CANCELLED")))
+         '((sequence "TODO" "IN-PROGRESS" "BLOCKED" "|" "DONE" "POSTPONED" "CANCELLED")))
    (setq org-enforce-todo-dependencies t)
    (setq org-ellipsis " ▼")
    (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
@@ -180,6 +166,8 @@
 		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H:%M>\n  :END:")
 		  ("w" "work todo" entry (file+datetree org-work-file)
 		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
+		  ("b" "bug" entry (file+datetree org-work-file)
+		   "* TODO %? :bug:\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
 		  ("l" "linked work todo" entry (file+datetree org-work-file)
 		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :Link: %a\n  :END:\n%^{Effort}p")
 		  ("i" "idea" entry (file+headline org-ideas-file)
@@ -188,18 +176,29 @@
 ** Prettify symbols
    Replace keywords with symbols
    #+BEGIN_SRC emacs-lisp
-  (add-hook 'js2-mode-hook
-			(lambda ()
-			  (push '("function" . ?ƒ) prettify-symbols-alist)
-			  (push '("this" . ?@) prettify-symbols-alist)
-			  (push '("null" . ?∅) prettify-symbols-alist)
-			  (push '("undefined" . ?∄) prettify-symbols-alist)
-			  (push '("return" . ?⇐) prettify-symbols-alist)
-			  (push '("=>" . ?⇒) prettify-symbols-alist)
-			  (push '("prototype" . ?Ω) prettify-symbols-alist)))
-			  ;; (remove-duplicates prettify-symbols-alist :test 'string=)))
 
-  (global-prettify-symbols-mode 1)
+   (defun register-prettify ()
+ 	  (progn
+ 		(push '("function" . ?ƒ) prettify-symbols-alist)
+ 		(push '("this" . ?@) prettify-symbols-alist)
+ 		(push '("null" . ?∅) prettify-symbols-alist)
+ 		(push '("undefined" . ?∄) prettify-symbols-alist)
+ 		(push '("return" . ?⇐) prettify-symbols-alist)
+ 		(push '("=>" . ?⇒) prettify-symbols-alist)
+ 		(push '("prototype" . ?Ω) prettify-symbols-alist)))
+	 ;; (remove-duplicates prettify-symbols-alist :test 'string=)))
+ 
+   (add-hook 'js2-mode-hook 'register-prettify)
+   (add-hook 'react-mode-hook 'register-prettify)
+
+   (global-prettify-symbols-mode 1)
+   #+END_SRC
+** Rainbow mode
+   #+BEGIN_SRC emacs-lisp
+   (add-hook 'css-mode-hook (lambda () (rainbow-mode t)))
+   (add-hook 'less-mode-hook (lambda () (rainbow-mode t)))
+   (add-hook 'scss-mode-hook (lambda () (rainbow-mode t)))
+   (add-hook 'sass-mode-hook (lambda () (rainbow-mode t)))
    #+END_SRC
 ** Tramp settings
   #+BEGIN_SRC emacs-lisp
@@ -210,14 +209,41 @@
   (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
   (defun open-custom-config ()
 	(interactive)
-	(find-file "~/emacs-config/emacs.config.org"))
+	(custom/open-in-split "~/emacs-config/emacs.config.org"))
   (defun open-general-org-file ()
 	(interactive)
-	(find-file org-general-file))
+	(custom/open-in-split org-general-file))
   (defun open-work-org-file ()
 	(interactive)
-	(find-file org-work-file))
+	(custom/open-in-split org-work-file))
   (defun open-ideas-org-file ()
 	(interactive)
-	(find-file org-ideas-file))
+	(custom/open-in-split org-ideas-file))
   #+END_SRC
+* Functions
+** Fix spelling errors
+   #+BEGIN_SRC emacs-lisp
+   (defun custom/ispell-fix-then-abbrev (p)
+	"Fix mispelled word with ispell-word, then create an abbrevation for that."
+	(interactive "P")
+	(let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
+	  (call-interactively 'ispell-word)
+	  (setq aft (downcase (or (thing-at-point 'word) "")))
+	  (unless (string= aft bef)
+		(message "\"%s\" now expands to \"%s\" %sally"
+				 bef aft (if p "loc" "glob")
+				 (define-abbrev
+				   (if p local-abbrev-table global-abbrev-table)
+				   bef aft)))))
+   #+END_SRC
+** Open in new or current window
+   #+BEGIN_SRC emacs-lisp
+  (defun custom/open-in-split (file)
+   	"get window count, if it's only one, open new window to the right, load file"
+ 	(interactive)
+ 	(if (= (length (window-list)) 1)
+ 	  (progn
+ 		(split-window-right-and-focus)
+ 		(find-file file))
+ 	  (find-file file)))
+   #+END_SRC
