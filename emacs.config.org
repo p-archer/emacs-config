@@ -236,7 +236,7 @@
 				   (if p local-abbrev-table global-abbrev-table)
 				   bef aft)))))
    #+END_SRC
-** Open in new or current window
+** Open in new or existing window
    #+BEGIN_SRC emacs-lisp
   (defun custom/open-in-split (file)
    	"get window count, if it's only one, open new window to the right, load file"
@@ -245,5 +245,7 @@
  	  (progn
  		(split-window-right-and-focus)
  		(find-file file))
- 	  (find-file file)))
+ 	  (progn 
+	    (other-window 1)
+        (find-file file))))
    #+END_SRC
