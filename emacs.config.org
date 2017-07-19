@@ -39,10 +39,17 @@
 		   (tab-mark 9 [124 9])))
 
    ;; make sure whitespaces are shown in the following modes
+   (add-hook 'js2-mode-hook (lambda() (whitespace-mode t)))
    (add-hook 'web-mode-hook (lambda () (whitespace-mode t)))
    (add-hook 'less-mode-hook (lambda () (whitespace-mode t)))
    (add-hook 'css-mode-hook (lambda () (whitespace-mode t)))
    (add-hook 'js-jsx-mode-hook (lambda () (whitespace-mode t)))
+
+   (add-hook 'js2-mode-hook (lambda() (setq truncate-lines 1)))
+   (add-hook 'web-mode-hook (lambda () (setq truncate-lines 1)))
+   (add-hook 'less-mode-hook (lambda () (setq truncate-lines 1)))
+   (add-hook 'css-mode-hook (lambda () (setq truncate-lines 1)))
+   (add-hook 'js-jsx-mode-hook (lambda () (setq truncate-lines 1)))
    #+END_SRC
 ** Window settings
    Transparency for the window.
@@ -87,7 +94,8 @@
   (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
   (define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
   (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
-  (define-key evil-normal-state-map (kbd "<tab>") 'evil-toggle-fold)
+  ;(define-key evil-normal-state-map (kbd "<tab>") 'origami-toggle-node)
+  ;(define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
   #+END_SRC
 ** Key chord escapes
   #+BEGIN_SRC emacs-lisp
@@ -113,6 +121,7 @@
    (require 'engine-mode)
    (engine-mode 1)
    (defengine google "https://google.com/search?q=%s" :keybinding "g")
+   (defengine wiki "https://en.wikipedia.org/wiki/Search?search=%s" :keybinding "w")
    (engine/set-keymap-prefix (kbd "M-/"))
    #+END_SRC
 ** ESlint
@@ -135,8 +144,6 @@
    #+BEGIN_SRC emacs-lisp
 	 (setq js2-mode-show-strict-warnings nil)
 	 (setq js2-mode-show-parse-errors nil)
-
-	 (add-hook 'js2-mode-hook (lambda() (whitespace-mode 1)))
    #+END_SRC
 ** Markdown
    #+BEGIN_SRC emacs-lisp
@@ -161,17 +168,38 @@
    (setq org-ellipsis " ▼")
    (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
 
+   (setq ssh-method "/ssh")
+   (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
+   (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
+   (setq org-general-file (concat aws-url "/home/carnifex/org/general.org"))
+   (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
+ 
+   (defun open-custom-config ()
+ 	   (interactive)
+ 	   (find-file "~/emacs-config/emacs.config.org"))
+   (defun open-general-org-file ()
+ 	   (interactive)
+ 	   (custom/open-in-split org-general-file))
+   (defun open-work-org-file ()
+ 	   (interactive)
+ 	   (custom/open-in-split org-work-file))
+   (defun open-ideas-org-file ()
+ 	   (interactive)
+ 	   (custom/open-in-split org-ideas-file))
    (setq org-capture-templates
-		'(("t" "todo" entry (file+datetree org-general-file)
-		   "* TODO %?\n  :PROPERTIES:\n  Added: %<%H:%M>\n  :END:")
-		  ("w" "work todo" entry (file+datetree org-work-file)
-		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
-		  ("b" "bug" entry (file+datetree org-work-file)
-		   "* TODO %? :bug:\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
-		  ("l" "linked work todo" entry (file+datetree org-work-file)
-		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :Link: %a\n  :END:\n%^{Effort}p")
-		  ("i" "idea" entry (file+headline org-ideas-file)
-		   "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n")))
+ 		 '(("t" "todo" entry (file+datetree org-general-file)
+ 		    "* TODO %?\n  :PROPERTIES:\n  Added: %<%H:%M>\n  :END:")
+ 		   ("w" "work todo" entry (file+datetree org-work-file)
+ 		    "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
+ 		   ("b" "bug" entry (file+datetree org-work-file)
+ 		    "* TODO %? :bug:\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
+ 		   ("l" "linked work todo" entry (file+datetree org-work-file)
+ 		    "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :Link: %a\n  :END:\n%^{Effort}p")
+ 		   ("i" "idea" entry (file+headline org-ideas-file)
+ 		    "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n")))
+		   
+   (setq org-agenda-files
+     (list org-work-file org-general-file))
    #+END_SRC
 ** Prettify symbols
    Replace keywords with symbols
@@ -200,26 +228,11 @@
    (add-hook 'scss-mode-hook (lambda () (rainbow-mode t)))
    (add-hook 'sass-mode-hook (lambda () (rainbow-mode t)))
    #+END_SRC
-** Tramp settings
-  #+BEGIN_SRC emacs-lisp
-  (setq ssh-method "/ssh")
-  (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
-  (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
-  (setq org-general-file (concat aws-url "/home/carnifex/org/general.org"))
-  (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
-  (defun open-custom-config ()
-	(interactive)
-	(custom/open-in-split "~/emacs-config/emacs.config.org"))
-  (defun open-general-org-file ()
-	(interactive)
-	(custom/open-in-split org-general-file))
-  (defun open-work-org-file ()
-	(interactive)
-	(custom/open-in-split org-work-file))
-  (defun open-ideas-org-file ()
-	(interactive)
-	(custom/open-in-split org-ideas-file))
-  #+END_SRC
+** Undo tree
+   #+BEGIN_SRC emacs-lisp
+   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.undo")))
+   (setq undo-tree-auto-save-history t)
+   #+END_SRC
 * Functions
 ** Fix spelling errors
    #+BEGIN_SRC emacs-lisp
