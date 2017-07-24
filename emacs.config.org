@@ -72,8 +72,12 @@
 	#+BEGIN_SRC emacs-lisp
 	(if (eq system-type 'windows-nt)
 	    (progn
-	      (set-default 'tramp-default-method "plink")
-		  (print "changed default method for tramp")))
+	      (setq-default tramp-default-method "plink")
+		  (setq ssh-method "/plink")
+		  (print "changed default method for tramp"))
+		(progn
+		  (setq-default tramp-default-method "ssh")
+		  (setq ssh-method "ssh")))
 	#+END_SRC
 *** Search tools
 	Set silver-searcher as default text-search program.
@@ -103,7 +107,8 @@
   (key-chord-mode t)
   (setq key-chord-two-keys-delay 0.5)
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-  (key-chord-define evil-insert-state-map ",." 'evil-normal-state)
+  ;; (key-chord-define evil-insert-state-map ",." 'evil-normal-state)
+  (setq-default evil-escape-key-sequence ",.")
   #+END_SRC
 ** Org file shortcuts
   #+BEGIN_SRC emacs-lisp
@@ -168,7 +173,6 @@
    (setq org-ellipsis " ▼")
    (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
 
-   (setq ssh-method "/ssh")
    (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
    (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
    (setq org-general-file (concat aws-url "/home/carnifex/org/general.org"))
