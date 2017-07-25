@@ -81,7 +81,7 @@
 		  (print "changed default method for tramp"))
 		(progn
 		  (setq-default tramp-default-method "ssh")
-		  (setq ssh-method "ssh")))
+		  (setq ssh-method "/ssh")))
 	#+END_SRC
 * Key bindings
 ** General key bindings
