@@ -10,19 +10,6 @@
    (setq-default indent-tabs-mode t)
    (setq-default tab-width 4)
    #+END_SRC
-** Remove smartparens
-   #+BEGIN_SRC emacs-lisp
-   ;; feeble attempt to get rid of the annoying smartparens
-   ;; (remove-hook 'prog-mode-hook #'smartparens-mode)
-   ;; (spacemacs/toggle-smartparens-globally-off)
-   ;; (smartparens-global-mode -1)
-   ;; (smartparens-mode -1)
-
-   ;; make sure whitespaces are shown in the following modes
-   ;; (add-hook 'web-mode-hook (lambda () (smartparens-mode -1)))
-   ;; (add-hook 'less-mode-hook (lambda () (smartparent-mode -1)))
-   ;; (add-hook 'css-mode-hook (lambda () (smartparent-mode -1)))
-   #+END_SRC
 ** Visual bookmarks
    #+BEGIN_SRC emacs-lisp
    (require 'bm)
@@ -98,7 +85,7 @@
   (define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
   (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
   ;(define-key evil-normal-state-map (kbd "<tab>") 'origami-toggle-node)
-  ;(define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
+  (define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
   #+END_SRC
 ** Key chord escapes
   #+BEGIN_SRC emacs-lisp
@@ -106,7 +93,6 @@
   (key-chord-mode t)
   (setq key-chord-two-keys-delay 0.5)
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-  ;; (key-chord-define evil-insert-state-map ",." 'evil-normal-state)
   (setq-default evil-escape-key-sequence ",.")
   #+END_SRC
 ** Org file shortcuts
