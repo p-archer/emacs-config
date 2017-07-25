@@ -84,6 +84,18 @@
 	      (setq helm-ag-base-command "c:\\emacs\\bin\\ag --vimgrep")
 		  (print "changed default method for search")))
 	#+END_SRC
+*** Tramp with putty
+	Set plink as default tramp method.
+	#+BEGIN_SRC emacs-lisp
+	(if (eq system-type 'windows-nt)
+	    (progn
+	      (setq-default tramp-default-method "plink")
+		  (setq ssh-method "/plink")
+		  (print "changed default method for tramp"))
+		(progn
+		  (setq-default tramp-default-method "ssh")
+		  (setq ssh-method "ssh")))
+	#+END_SRC
 * Key bindings
 ** General key bindings
   #+BEGIN_SRC emacs-lisp
