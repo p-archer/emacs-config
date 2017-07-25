@@ -67,17 +67,14 @@
 	      (add-to-list 'exec-path "c:\\Program Files\\Git\\bin")
 		  (print "changed default shell for windows")))
 	#+END_SRC
-*** Tramp with putty
-	Set plink as default tramp method.
+*** ISpell
 	#+BEGIN_SRC emacs-lisp
 	(if (eq system-type 'windows-nt)
 	    (progn
-	      (setq-default tramp-default-method "plink")
-		  (setq ssh-method "/plink")
-		  (print "changed default method for tramp"))
-		(progn
-		  (setq-default tramp-default-method "ssh")
-		  (setq ssh-method "ssh")))
+           (add-to-list 'exec-path "c:/Program Files (x86)/Aspell/bin")
+		   (setq ispell-dictionary "british")
+		   (setq ispell-program-name "aspell")
+		   (require 'ispell)))
 	#+END_SRC
 *** Search tools
 	Set silver-searcher as default text-search program.
