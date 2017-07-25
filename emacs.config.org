@@ -92,6 +92,8 @@
   #+BEGIN_SRC emacs-lisp
   (define-key evil-normal-state-map "L" 'evil-end-of-line)
   (define-key evil-normal-state-map "H" 'evil-beginning-of-line)
+  (define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-line-down)
+  (define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-line-up)
   (define-key evil-normal-state-map (kbd "C-h") 'evil-prev-buffer)
   (define-key evil-normal-state-map (kbd "C-l") 'evil-next-buffer)
   (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
@@ -162,7 +164,7 @@
 ** Neotree
    #+BEGIN_SRC emacs-lisp
    (setq neo-theme 'ascii)
-   (global-set-key [f2] 'neotree-toggle)
+   (global-set-key [f2] 'neotree-find-project-root)
    #+END_SRC
 ** Org settings
    Basic general org settings.
