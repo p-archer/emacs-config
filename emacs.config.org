@@ -245,7 +245,7 @@
    #+END_SRC
 ** Undo tree
    #+BEGIN_SRC emacs-lisp
-   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.undo")))
+   (setq undo-tree-history-directory-alist '(("." . "~/emacs-config/.undo")))
    (setq undo-tree-auto-save-history t)
    #+END_SRC
 * Functions
