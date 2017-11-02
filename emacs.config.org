@@ -47,12 +47,12 @@
 *** Bash shell
 	Set git bash as default shell.
 	#+BEGIN_SRC emacs-lisp
-	(if (eq system-type 'windows-nt)
-	    (progn
-		  (setq explicit-shell-file-name "C:\\Program Files\\git\\bin\\bash.exe")
-		  (setq shell-file-name explicit-shell-file-name)
-	      (add-to-list 'exec-path "c:\\Program Files\\Git\\bin")
-		  (print "changed default shell for windows")))
+	  ;; (if (eq system-type 'windows-nt)
+	  ;; 	(progn
+	  ;; 	  (setq explicit-shell-file-name "c:/Windows/System32/bash.exe")
+	  ;; 	  (setq shell-file-name explicit-shell-file-name)
+	  ;; 	  (add-to-list 'exec-path "c:/Windows/System32")
+	  ;; 	  (print "changed default shell for windows")))
 	#+END_SRC
 *** ISpell
 	#+BEGIN_SRC emacs-lisp
@@ -98,6 +98,7 @@
   (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
   ;(define-key evil-normal-state-map (kbd "<tab>") 'origami-toggle-node)
   (define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
+  (define-key evil-insert-state-map (kbd "M-;") 'yas-expand)
   #+END_SRC
 ** Key chord escapes
   #+BEGIN_SRC emacs-lisp
@@ -164,43 +165,43 @@
 ** Org settings
    Basic general org settings.
    #+BEGIN_SRC emacs-lisp
-   (setq org-todo-keywords
-         '((sequence "TODO" "IN-PROGRESS" "BLOCKED" "|" "DONE" "POSTPONED" "CANCELLED")))
-   (setq org-enforce-todo-dependencies t)
-   (setq org-ellipsis " ▼")
-   (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
+	 (setq org-todo-keywords
+		   '((sequence "TODO" "IN-PROGRESS" "BLOCKED" "|" "DONE" "POSTPONED" "CANCELLED")))
+	 (setq org-enforce-todo-dependencies t)
+	 (setq org-ellipsis " ▼")
+	 (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
 
-   (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
-   (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
-   (setq org-general-file (concat aws-url "/home/carnifex/org/general.org"))
-   (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
- 
-   (defun open-custom-config ()
- 	   (interactive)
- 	   (find-file "~/emacs-config/emacs.config.org"))
-   (defun open-general-org-file ()
- 	   (interactive)
- 	   (custom/open-in-split org-general-file))
-   (defun open-work-org-file ()
- 	   (interactive)
- 	   (custom/open-in-split org-work-file))
-   (defun open-ideas-org-file ()
- 	   (interactive)
- 	   (custom/open-in-split org-ideas-file))
-   (setq org-capture-templates
- 		 '(("t" "todo" entry (file+datetree org-general-file)
- 		    "* TODO %?\n  :PROPERTIES:\n  Added: %<%H:%M>\n  :END:")
- 		   ("w" "work todo" entry (file+datetree org-work-file)
- 		    "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
- 		   ("b" "bug" entry (file+datetree org-work-file)
- 		    "* TODO %? :bug:\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
- 		   ("l" "linked work todo" entry (file+datetree org-work-file)
- 		    "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :Link: %a\n  :END:\n%^{Effort}p")
- 		   ("i" "idea" entry (file+headline org-ideas-file)
- 		    "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n")))
-		   
-   (setq org-agenda-files
-     (list org-work-file org-general-file))
+	 (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
+	 (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
+	 (setq org-general-file (concat aws-url "/home/carnifex/org/general.org"))
+	 (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
+
+	 (defun open-custom-config ()
+		 (interactive)
+		 (find-file "~/emacs-config/emacs.config.org"))
+	 (defun open-general-org-file ()
+		 (interactive)
+		 (custom/open-in-split org-general-file))
+	 (defun open-work-org-file ()
+		 (interactive)
+		 (custom/open-in-split org-work-file))
+	 (defun open-ideas-org-file ()
+		 (interactive)
+		 (custom/open-in-split org-ideas-file))
+	 (setq org-capture-templates
+		   '(("t" "todo" entry (file+datetree org-general-file)
+			  "* TODO %?\n  :PROPERTIES:\n  Added: %<%H:%M>\n  :END:")
+			 ("w" "work todo" entry (file+datetree org-work-file)
+			  "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
+			 ("b" "bug" entry (file+datetree org-work-file)
+			  "* TODO %? :bug:\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
+			 ("l" "linked work todo" entry (file+datetree org-work-file)
+			  "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :Link: %a\n  :END:\n%^{Effort}p")
+			 ("i" "idea" entry (file+headline org-ideas-file)
+			  "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n")))
+
+	 ;; (setq org-agenda-files
+	   ;; (list org-work-file org-general-file))
    #+END_SRC
 ** Prettify symbols
    Replace keywords with symbols
