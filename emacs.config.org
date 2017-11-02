@@ -10,6 +10,10 @@
    (setq-default indent-tabs-mode t)
    (setq-default tab-width 4)
    #+END_SRC
+** Python
+   #+BEGIN_SRC emacs-lisp
+   (setq python-shell-interpreter "python2")
+   #+END_SRC
 ** Visual bookmarks
    #+BEGIN_SRC emacs-lisp
    (require 'bm)
@@ -123,6 +127,7 @@
    #+BEGIN_SRC emacs-lisp
    (require 'engine-mode)
    (engine-mode 1)
+   (defengine duckduckgo "https://duckduckgo.com/?q=%s" :keybinding "d")
    (defengine google "https://google.com/search?q=%s" :keybinding "g")
    (defengine wiki "https://en.wikipedia.org/wiki/Search?search=%s" :keybinding "w")
    (engine/set-keymap-prefix (kbd "M-/"))
@@ -130,6 +135,13 @@
 ** ESlint
    #+BEGIN_SRC emacs-lisp
 	 (setq flycheck-eslintrc "~/.eslintrc")
+   #+END_SRC
+** Eww
+   #+BEGIN_SRC emacs-lisp
+   (setq shr-inhibit-images t)
+   #+END_SRC
+** Flycheck
+   #+BEGIN_SRC emacs-lisp
    #+END_SRC
 ** Flyspell auto-correct
    #+BEGIN_SRC emacs-lisp
@@ -156,6 +168,7 @@
 ** Magit
    #+BEGIN_SRC emacs-lisp
    (setq-default git-magit-status-fullscreen 1)
+   (setq git-magit-status-fullscreen 1)
    #+END_SRC
 ** Neotree
    #+BEGIN_SRC emacs-lisp
