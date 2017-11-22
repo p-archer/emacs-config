@@ -102,7 +102,12 @@
   (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
   ;(define-key evil-normal-state-map (kbd "<tab>") 'origami-toggle-node)
   (define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
+
   (define-key evil-insert-state-map (kbd "M-;") 'yas-expand)
+  (define-key evil-insert-state-map (kbd "C-j") 'evil-scroll-line-down)
+  (define-key evil-insert-state-map (kbd "C-k") 'evil-scroll-line-up)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-prev-buffer)
+  (define-key evil-insert-state-map (kbd "C-l") 'evil-next-buffer)
   #+END_SRC
 ** Key chord escapes
   #+BEGIN_SRC emacs-lisp
@@ -116,12 +121,17 @@
   #+BEGIN_SRC emacs-lisp
   (spacemacs/set-leader-keys
 	"feD" 'open-custom-config
-	"feg" 'open-general-org-file
-	"few" 'open-work-org-file
+	"feg" 'open-inbox-org-file
+	"fep" 'open-projects-org-file
+	"fes" 'open-shopping-org-file
 	"fei" 'open-ideas-org-file)
   #+END_SRC
 * Packages
   Configuration for used packages.
+  #+BEGIN_SRC emacs-lisp
+   (add-to-list 'package-archives
+                '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+  #+END_SRC
 ** Engine mode
    Package to search in browser.
    #+BEGIN_SRC emacs-lisp
@@ -183,38 +193,47 @@
 	 (setq org-enforce-todo-dependencies t)
 	 (setq org-ellipsis " ▼")
 	 (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
+	 (setq org-reverse-note-order t)
+	 (setq org-refile-use-outline-path t)
 
 	 (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
-	 (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
-	 (setq org-general-file (concat aws-url "/home/carnifex/org/general.org"))
+	 (setq org-inbox-file (concat aws-url "/home/carnifex/org/inbox.org"))
+	 (setq org-projects-file (concat aws-url "/home/carnifex/org/projects.org"))
 	 (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
+	 (setq org-shopping-file (concat aws-url "/home/carnifex/org/shopping.org"))
 
 	 (defun open-custom-config ()
 		 (interactive)
 		 (find-file "~/emacs-config/emacs.config.org"))
-	 (defun open-general-org-file ()
+	 (defun open-projects-org-file ()
 		 (interactive)
-		 (custom/open-in-split org-general-file))
-	 (defun open-work-org-file ()
+		 (custom/open-in-split org-projects-file))
+	 (defun open-inbox-org-file ()
 		 (interactive)
-		 (custom/open-in-split org-work-file))
+		 (custom/open-in-split org-inbox-file))
 	 (defun open-ideas-org-file ()
 		 (interactive)
 		 (custom/open-in-split org-ideas-file))
-	 (setq org-capture-templates
-		   '(("t" "todo" entry (file+datetree org-general-file)
-			  "* TODO %?\n  :PROPERTIES:\n  Added: %<%H:%M>\n  :END:")
-			 ("w" "work todo" entry (file+datetree org-work-file)
-			  "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
-			 ("b" "bug" entry (file+datetree org-work-file)
-			  "* TODO %? :bug:\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n%^{Effort}p")
-			 ("l" "linked work todo" entry (file+datetree org-work-file)
-			  "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :Link: %a\n  :END:\n%^{Effort}p")
-			 ("i" "idea" entry (file+headline org-ideas-file)
-			  "* TODO %?\n  :PROPERTIES:\n  :Added: %<%H:%M>\n  :END:\n")))
+	 (defun open-shopping-org-file ()
+		 (interactive)
+		 (custom/open-in-split org-shopping-file))
 
-	 ;; (setq org-agenda-files
-	   ;; (list org-work-file org-general-file))
+	 (setq org-capture-templates
+		   '(("t" "todo" entry (file+headline org-inbox-file "inbox")
+			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
+			 ("l" "linked todo" entry (file+headline org-inbox-file "inbox")
+			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :Link: %a\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
+			 ("s" "shop" entry (file+headline org-shopping-file "inbox")
+			  "* BUY %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)
+			 ("i" "idea/someday" entry (file+headline org-ideas-file)
+			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)))
+
+	 (setq org-refile-targets '((org-projects-file :maxlevel . 1)
+	                            (org-shopping-file :maxlevel . 1)))
+     (setq org-outline-path-complete-in-steps nil)
+
+	 (setq org-agenda-files
+	   (list org-inbox-file org-projects-file))
    #+END_SRC
 ** Prettify symbols
    Replace keywords with symbols
