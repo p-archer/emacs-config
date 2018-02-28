@@ -41,6 +41,7 @@
    (add-hook 'less-mode-hook (lambda () (setq truncate-lines 1)))
    (add-hook 'css-mode-hook (lambda () (setq truncate-lines 1)))
    (add-hook 'js-jsx-mode-hook (lambda () (setq truncate-lines 1)))
+   (add-hook 'coffee-mode-hook (lambda () (setq truncate-lines 1)))
    #+END_SRC
 ** Window settings
    Transparency for the window.
@@ -63,7 +64,7 @@
 	(if (eq system-type 'windows-nt)
 	    (progn
            (add-to-list 'exec-path "c:/Program Files (x86)/Aspell/bin")
-		   (setq ispell-dictionary "british")
+		   (setq ispell-dictionary "american")
 		   (setq ispell-program-name "aspell")
 		   (require 'ispell)))
 	#+END_SRC
@@ -112,6 +113,10 @@
   (define-key evil-insert-state-map (kbd "C-S-k") (lambda () (interactive) (evil-scroll-line-up 5)))
   (define-key evil-insert-state-map (kbd "C-h") 'evil-prev-buffer)
   (define-key evil-insert-state-map (kbd "C-l") 'evil-next-buffer)
+  (define-key evil-insert-state-map (kbd "s-j") 'move-text-line-down)
+  (define-key evil-insert-state-map (kbd "s-k") 'move-text-line-up)
+  (define-key evil-normal-state-map (kbd "s-j") 'move-text-line-down)
+  (define-key evil-normal-state-map (kbd "s-k") 'move-text-line-up)
 
   (spacemacs/set-leader-keys
     "ca" 'custom/copy-file-contents)
@@ -193,6 +198,7 @@
    #+BEGIN_SRC emacs-lisp
    (setq neo-theme 'ascii)
    (global-set-key [f2] 'neotree-find-project-root)
+   (setq neo-window-position 'right)
    #+END_SRC
 ** Org settings
    Basic general org settings.
@@ -205,8 +211,7 @@
 	 (setq org-reverse-note-order t)
 	 (setq org-refile-use-outline-path t)
 
-	 (setq aws-url (concat ssh-method ":carnifex@54.191.68.180:"))
-	 (setq org-inbox-file (concat aws-url "/home/carnifex/org/inbox.org"))
+	 (setq aws-url (concat ssh-method ":carnifex@35.178.58.103:"))
 	 (setq org-projects-file (concat aws-url "/home/carnifex/org/projects.org"))
 	 (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
 	 (setq org-shopping-file (concat aws-url "/home/carnifex/org/shopping.org"))
@@ -217,9 +222,6 @@
 	 (defun open-projects-org-file ()
 		 (interactive)
 		 (custom/open-in-split org-projects-file))
-	 (defun open-inbox-org-file ()
-		 (interactive)
-		 (custom/open-in-split org-inbox-file))
 	 (defun open-ideas-org-file ()
 		 (interactive)
 		 (custom/open-in-split org-ideas-file))
@@ -228,9 +230,9 @@
 		 (custom/open-in-split org-shopping-file))
 
 	 (setq org-capture-templates
-		   '(("t" "todo" entry (file+headline org-inbox-file "inbox")
+		   '(("t" "todo" entry (file+headline org-projects-file "inbox")
 			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
-			 ("l" "linked todo" entry (file+headline org-inbox-file "inbox")
+			 ("l" "linked todo" entry (file+headline org-projects-file "inbox")
 			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :Link: %a\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
 			 ("s" "shop" entry (file+headline org-shopping-file "inbox")
 			  "* BUY %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)
@@ -243,7 +245,7 @@
 	 (setq org-feed-save-after-adding t)
 
 	 (setq org-agenda-files
-	   (list org-inbox-file org-projects-file))
+	   (list org-projects-file))
    #+END_SRC
 ** Prettify symbols
    Replace keywords with symbols
@@ -261,6 +263,7 @@
 	 ;; (remove-duplicates prettify-symbols-alist :test 'string=)))
  
    (add-hook 'js2-mode-hook 'register-prettify)
+   (add-hook 'coffee-mode-hook 'register-prettify)
    (add-hook 'react-mode-hook 'register-prettify)
 
    (global-prettify-symbols-mode 1)
@@ -288,7 +291,9 @@
 
    (spaceline-toggle-all-the-icons-bookmark-on)
    (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
-   (setq spaceline-all-the-icons-icon-set-modified 'circle)
+   (spaceline-toggle-all-the-icons-time-off)
+   (spaceline-toggle-all-the-icons-hud-off)
+   (spaceline-toggle-all-the-icons-position-off)
    (setq spaceline-all-the-icons-icon-set-git-ahead 'commit)
    (setq spaceline-all-the-icons-icon-set-window-numbering 'solid)
    (setq spaceline-all-the-icons-slim-render t)
