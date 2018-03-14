@@ -136,8 +136,8 @@
   (spacemacs/set-leader-keys
 	"feD" 'open-custom-config
 	"feg" 'open-inbox-org-file
+	"few" 'open-work-org-file
 	"fep" 'open-projects-org-file
-	"fes" 'open-shopping-org-file
 	"fei" 'open-ideas-org-file)
   #+END_SRC
 * Packages
@@ -196,7 +196,7 @@
    #+END_SRC
 ** Neotree
    #+BEGIN_SRC emacs-lisp
-   (setq neo-theme 'ascii)
+   (setq neo-theme 'icons)
    (global-set-key [f2] 'neotree-find-project-root)
    (setq neo-window-position 'right)
    #+END_SRC
@@ -211,41 +211,40 @@
 	 (setq org-reverse-note-order t)
 	 (setq org-refile-use-outline-path t)
 
-	 (setq aws-url (concat ssh-method ":carnifex@35.178.58.103:"))
+	 (setq aws-url (concat ssh-method ":carnifex@54.244.68.202:"))
 	 (setq org-projects-file (concat aws-url "/home/carnifex/org/projects.org"))
+	 (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
+	 (setq org-inbox-file (concat aws-url "/home/carnifex/org/inbox.org"))
 	 (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
-	 (setq org-shopping-file (concat aws-url "/home/carnifex/org/shopping.org"))
 
 	 (defun open-custom-config ()
 		 (interactive)
 		 (find-file "~/emacs-config/emacs.config.org"))
+	 (defun open-work-org-file ()
+		 (interactive)
+		 (custom/open-in-split org-work-file))
 	 (defun open-projects-org-file ()
 		 (interactive)
 		 (custom/open-in-split org-projects-file))
 	 (defun open-ideas-org-file ()
 		 (interactive)
 		 (custom/open-in-split org-ideas-file))
-	 (defun open-shopping-org-file ()
-		 (interactive)
-		 (custom/open-in-split org-shopping-file))
 
 	 (setq org-capture-templates
-		   '(("t" "todo" entry (file+headline org-projects-file "inbox")
+		   '(("t" "todo" entry (file+headline org-inbox-file "inbox")
 			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
-			 ("l" "linked todo" entry (file+headline org-projects-file "inbox")
+			 ("l" "linked todo" entry (file+headline org-inbox-file "inbox")
 			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :Link: %a\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
-			 ("s" "shop" entry (file+headline org-shopping-file "inbox")
-			  "* BUY %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)
 			 ("i" "idea/someday" entry (file+headline org-ideas-file)
 			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)))
 
 	 (setq org-refile-targets '((org-projects-file :maxlevel . 1)
-	                            (org-shopping-file :maxlevel . 1)))
-     (setq org-outline-path-complete-in-steps nil)
+								(org-work-file :maxlevel . 1)))
+	 (setq org-outline-path-complete-in-steps nil)
 	 (setq org-feed-save-after-adding t)
 
 	 (setq org-agenda-files
-	   (list org-projects-file))
+	   (list org-inbox-file org-work-file org-projects-file))
    #+END_SRC
 ** Prettify symbols
    Replace keywords with symbols
