@@ -242,6 +242,7 @@
 								(org-work-file :maxlevel . 1)))
 	 (setq org-outline-path-complete-in-steps nil)
 	 (setq org-feed-save-after-adding t)
+	 (setq org-agenda-window-setup 'current-window)
 
 	 (setq org-agenda-files
 	   (list org-inbox-file org-work-file org-projects-file))
