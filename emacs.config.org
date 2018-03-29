@@ -211,27 +211,30 @@
 	 (setq org-reverse-note-order t)
 	 (setq org-refile-use-outline-path t)
 
-	 (setq aws-url (concat ssh-method ":carnifex@54.244.68.202:"))
+	 (setq aws-url (concat ssh-method ":carnifex@34.217.132.133:"))
 	 (setq org-projects-file (concat aws-url "/home/carnifex/org/projects.org"))
-	 (setq org-work-file (concat aws-url "/home/carnifex/org/work.org"))
 	 (setq org-inbox-file (concat aws-url "/home/carnifex/org/inbox.org"))
 	 (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
+
+	 (if (file-exists-p "~/org/work.org")
+		 (progn
+		    (setq org-work-file "~/org/work.org")
+			(setq org-work-inbox-file "~/org/work-inbox.org"))
+		 (progn
+			(setq org-work-file nil)
+			(setq org-work-inbox-file nil)))
 
 	 (defun open-custom-config ()
 		 (interactive)
 		 (find-file "~/emacs-config/emacs.config.org"))
-	 (defun open-work-org-file ()
-		 (interactive)
-		 (custom/open-in-split org-work-file))
-	 (defun open-projects-org-file ()
-		 (interactive)
-		 (custom/open-in-split org-projects-file))
 	 (defun open-ideas-org-file ()
 		 (interactive)
 		 (custom/open-in-split org-ideas-file))
 
 	 (setq org-capture-templates
 		   '(("t" "todo" entry (file+headline org-inbox-file "inbox")
+			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
+			 ("w" "work todo" entry (file+headline org-work-inbox-file "inbox")
 			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
 			 ("l" "linked todo" entry (file+headline org-inbox-file "inbox")
 			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :Link: %a\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
@@ -244,8 +247,13 @@
 	 (setq org-feed-save-after-adding t)
 	 (setq org-agenda-window-setup 'current-window)
 
-	 (setq org-agenda-files
-	   (list org-inbox-file org-work-file org-projects-file))
+	 (if org-work-file
+	     (setq org-agenda-files
+	           (list org-inbox-file org-projects-file org-work-file org-work-inbox-file))
+	     (setq org-agenda-files
+	           (list org-inbox-file org-projects-file)))
+
+	 (calendar-set-date-style 'iso)
    #+END_SRC
 ** Prettify symbols
    Replace keywords with symbols
@@ -297,6 +305,11 @@
    (setq spaceline-all-the-icons-icon-set-git-ahead 'commit)
    (setq spaceline-all-the-icons-icon-set-window-numbering 'solid)
    (setq spaceline-all-the-icons-slim-render t)
+   #+END_SRC
+** Tramp
+   #+BEGIN_SRC emacs-lisp
+   (setq tramp-copy-size-limit nil)
+   (setq tramp-verbose 6)
    #+END_SRC
 ** Undo tree
    #+BEGIN_SRC emacs-lisp
