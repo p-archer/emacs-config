@@ -3,7 +3,7 @@
 #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
 
 * UI setup
- Config for general usage.
+  Config for general usage.
 ** Indentation
    Use tabs, force tab-width 4.
    #+BEGIN_SRC emacs-lisp
@@ -43,51 +43,6 @@
    (add-hook 'js-jsx-mode-hook (lambda () (setq truncate-lines 1)))
    (add-hook 'coffee-mode-hook (lambda () (setq truncate-lines 1)))
    #+END_SRC
-** Window settings
-   Transparency for the window.
-   #+BEGIN_SRC emacs-lisp
-   (set-frame-parameter (selected-frame) 'alpha '(95 . 80))
-   #+END_SRC
-** Windows settings
-*** Bash shell
-	Set git bash as default shell.
-	#+BEGIN_SRC emacs-lisp
-	  ;; (if (eq system-type 'windows-nt)
-	  ;; 	(progn
-	  ;; 	  (setq explicit-shell-file-name "c:/Windows/System32/bash.exe")
-	  ;; 	  (setq shell-file-name explicit-shell-file-name)
-	  ;; 	  (add-to-list 'exec-path "c:/Windows/System32")
-	  ;; 	  (print "changed default shell for windows")))
-	#+END_SRC
-*** ISpell
-	#+BEGIN_SRC emacs-lisp
-	(if (eq system-type 'windows-nt)
-	    (progn
-           (add-to-list 'exec-path "c:/Program Files (x86)/Aspell/bin")
-		   (setq ispell-dictionary "american")
-		   (setq ispell-program-name "aspell")
-		   (require 'ispell)))
-	#+END_SRC
-*** Search tools
-	Set silver-searcher as default text-search program.
-	#+BEGIN_SRC emacs-lisp
-	(if (eq system-type 'windows-nt)
-	    (progn
-	      (setq helm-ag-base-command "c:\\emacs\\bin\\ag --vimgrep")
-		  (print "changed default method for search")))
-	#+END_SRC
-*** Tramp with putty
-	Set plink as default tramp method.
-	#+BEGIN_SRC emacs-lisp
-	(if (eq system-type 'windows-nt)
-	    (progn
-	      (setq-default tramp-default-method "plink")
-		  (setq ssh-method "/plink")
-		  (print "changed default method for tramp"))
-		(progn
-		  (setq-default tramp-default-method "ssh")
-		  (setq ssh-method "/ssh")))
-	#+END_SRC
 * Key bindings
 ** General key bindings
   #+BEGIN_SRC emacs-lisp
@@ -135,9 +90,6 @@
   #+BEGIN_SRC emacs-lisp
   (spacemacs/set-leader-keys
 	"feD" 'open-custom-config
-	"feg" 'open-inbox-org-file
-	"few" 'open-work-org-file
-	"fep" 'open-projects-org-file
 	"fei" 'open-ideas-org-file)
   #+END_SRC
 * Packages
@@ -203,57 +155,64 @@
 ** Org settings
    Basic general org settings.
    #+BEGIN_SRC emacs-lisp
-	 (setq org-todo-keywords
-		   '((sequence "TODO" "IN-PROGRESS" "BLOCKED" "|" "DONE" "POSTPONED" "CANCELLED")))
-	 (setq org-enforce-todo-dependencies t)
-	 (setq org-ellipsis " ▼")
-	 (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
-	 (setq org-reverse-note-order t)
-	 (setq org-refile-use-outline-path t)
+	(setq org-agenda-dim-blocked-tasks nil)
+	(setq org-agenda-use-tag-inheritance nil)
 
-	 (setq aws-url (concat ssh-method ":carnifex@34.217.132.133:"))
-	 (setq org-projects-file (concat aws-url "/home/carnifex/org/projects.org"))
-	 (setq org-inbox-file (concat aws-url "/home/carnifex/org/inbox.org"))
-	 (setq org-ideas-file (concat aws-url "/home/carnifex/org/ideas.org"))
+	(custom-set-variables
+	 '(tramp-default-method "scp")
+	 '(tramp-default-user "carnifex")
+	 '(tramp-default-host "34.217.132.133"))
 
-	 (if (file-exists-p "~/org/work.org")
-		 (progn
-		    (setq org-work-file "~/org/work.org")
-			(setq org-work-inbox-file "~/org/work-inbox.org"))
-		 (progn
-			(setq org-work-file nil)
-			(setq org-work-inbox-file nil)))
+	(setq org-todo-keywords
+		  '((sequence "TODO" "IN-PROGRESS" "BLOCKED" "|" "DONE" "POSTPONED" "CANCELLED")))
+	(setq org-enforce-todo-dependencies t)
+	(setq org-ellipsis " ▼")
+	(setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
+	(setq org-reverse-note-order t)
+	(setq org-refile-use-outline-path t)
 
-	 (defun open-custom-config ()
-		 (interactive)
-		 (find-file "~/emacs-config/emacs.config.org"))
-	 (defun open-ideas-org-file ()
-		 (interactive)
-		 (custom/open-in-split org-ideas-file))
+	(setq org-projects-file (concat "/" tramp-default-method "::" "org/projects.org"))
+	(setq org-projects-inbox-file (concat "/" tramp-default-method "::" "org/inbox.org"))
+	(setq org-ideas-file (concat "/" tramp-default-method "::" "org/ideas.org"))
 
-	 (setq org-capture-templates
-		   '(("t" "todo" entry (file+headline org-inbox-file "inbox")
-			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
-			 ("w" "work todo" entry (file+headline org-work-inbox-file "inbox")
-			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
-			 ("l" "linked todo" entry (file+headline org-inbox-file "inbox")
-			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :Link: %a\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
-			 ("i" "idea/someday" entry (file+headline org-ideas-file)
-			  "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)))
+	(if (file-exists-p "~/org/work.org")
+		(progn
+		  (setq org-work-file "~/org/work.org")
+		  (setq org-work-inbox-file "~/org/work-inbox.org"))
+	  (progn
+		(setq org-work-file nil)
+		(setq org-work-inbox-file nil)))
 
-	 (setq org-refile-targets '((org-projects-file :maxlevel . 1)
-								(org-work-file :maxlevel . 1)))
-	 (setq org-outline-path-complete-in-steps nil)
-	 (setq org-feed-save-after-adding t)
-	 (setq org-agenda-window-setup 'current-window)
+	(defun open-custom-config ()
+	  (interactive)
+	  (find-file "~/emacs-config/emacs.config.org"))
+	(defun open-ideas-org-file ()
+	  (interactive)
+	  (find-file org-ideas-file))
 
-	 (if org-work-file
-	     (setq org-agenda-files
-	           (list org-inbox-file org-projects-file org-work-file org-work-inbox-file))
-	     (setq org-agenda-files
-	           (list org-inbox-file org-projects-file)))
+	(setq org-capture-templates
+		  '(("t" "todo" entry (file+headline org-projects-inbox-file "inbox")
+			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
+			("w" "work todo" entry (file+headline org-work-inbox-file "inbox")
+			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
+			("l" "linked todo" entry (file+headline org-projects-inbox-file "inbox")
+			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :Link: %a\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
+			("i" "idea/someday" entry (file+headline org-ideas-file)
+			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)))
 
-	 (calendar-set-date-style 'iso)
+	(setq org-refile-targets '((org-projects-file :maxlevel . 1)
+							   (org-work-file :maxlevel . 1)))
+	(setq org-outline-path-complete-in-steps nil)
+	(setq org-feed-save-after-adding t)
+	(setq org-agenda-window-setup 'current-window)
+
+	(if org-work-file
+		(setq org-agenda-files
+			  (list org-projects-inbox-file org-projects-file org-work-file org-work-inbox-file))
+	  (setq org-agenda-files
+			(list org-projects-inbox-file org-projects-file)))
+
+	(calendar-set-date-style 'iso)
    #+END_SRC
 ** Prettify symbols
    Replace keywords with symbols
@@ -309,7 +268,11 @@
 ** Tramp
    #+BEGIN_SRC emacs-lisp
    (setq tramp-copy-size-limit nil)
-   (setq tramp-verbose 6)
+   (setq tramp-verbose 3)
+   (setq remote-file-name-inhibit-cache t)
+
+   (add-to-list 'backup-directory-alist
+                (cons tramp-file-name-regexp nil))
    #+END_SRC
 ** Undo tree
    #+BEGIN_SRC emacs-lisp
