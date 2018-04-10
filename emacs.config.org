@@ -209,8 +209,8 @@
 	(if org-work-file
 		(setq org-agenda-files
 			  (list org-projects-inbox-file org-projects-file org-work-file org-work-inbox-file))
-	  (setq org-agenda-files
-			(list org-projects-inbox-file org-projects-file)))
+	    (setq org-agenda-files
+			  (list org-projects-inbox-file org-projects-file)))
 
 	(calendar-set-date-style 'iso)
    #+END_SRC
