@@ -42,6 +42,13 @@
    (add-hook 'css-mode-hook (lambda () (setq truncate-lines 1)))
    (add-hook 'js-jsx-mode-hook (lambda () (setq truncate-lines 1)))
    (add-hook 'coffee-mode-hook (lambda () (setq truncate-lines 1)))
+
+   (spacemacs/toggle-vi-tilde-fringe-off)
+   #+END_SRC
+** Window settings
+   Transparency for the window.
+   #+BEGIN_SRC emacs-lisp
+   (set-frame-parameter (selected-frame) 'alpha '(90 . 80))
    #+END_SRC
 * Key bindings
 ** General key bindings
@@ -157,9 +164,10 @@
    #+BEGIN_SRC emacs-lisp
 	(setq org-agenda-dim-blocked-tasks nil)
 	(setq org-agenda-use-tag-inheritance nil)
+	(setq tramp-method "scp")
 
 	(custom-set-variables
-	 '(tramp-default-method "scp")
+	 '(tramp-default-method tramp-method)
 	 '(tramp-default-user "carnifex")
 	 '(tramp-default-host "34.217.132.133"))
 
@@ -171,9 +179,9 @@
 	(setq org-reverse-note-order t)
 	(setq org-refile-use-outline-path t)
 
-	(setq org-projects-file (concat "/" tramp-default-method "::" "org/projects.org"))
-	(setq org-projects-inbox-file (concat "/" tramp-default-method "::" "org/inbox.org"))
-	(setq org-ideas-file (concat "/" tramp-default-method "::" "org/ideas.org"))
+	(setq org-projects-file (concat "/" tramp-method "::" "/home/carnifex/org/projects.org"))
+	(setq org-projects-inbox-file (concat "/" tramp-method "::" "/home/carnifex/org/projects-inbox.org"))
+	(setq org-ideas-file (concat "/" tramp-method "::" "/home/carnifex/org/ideas.org"))
 
 	(if (file-exists-p "~/org/work.org")
 		(progn
