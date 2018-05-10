@@ -164,7 +164,7 @@
    #+BEGIN_SRC emacs-lisp
 	(setq org-agenda-dim-blocked-tasks nil)
 	(setq org-agenda-use-tag-inheritance nil)
-	(setq tramp-method "scp")
+	(setq tramp-method "ssh")
 
 	(custom-set-variables
 	 '(tramp-default-method tramp-method)
@@ -200,11 +200,11 @@
 
 	(setq org-capture-templates
 		  '(("t" "todo" entry (file+headline org-projects-inbox-file "inbox")
-			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
+			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :source:   emacs\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
 			("w" "work todo" entry (file+headline org-work-inbox-file "inbox")
 			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
-			("l" "linked todo" entry (file+headline org-projects-inbox-file "inbox")
-			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :Link: %a\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
+			("l" "linked todo" entry (file+headline org-work-inbox-file "inbox")
+			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :link: %a\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
 			("i" "idea/someday" entry (file+headline org-ideas-file)
 			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)))
 
@@ -213,6 +213,7 @@
 	(setq org-outline-path-complete-in-steps nil)
 	(setq org-feed-save-after-adding t)
 	(setq org-agenda-window-setup 'current-window)
+	(setq org-bullets-bullet-list '("Φ"))
 
 	(if org-work-file
 		(setq org-agenda-files
@@ -257,21 +258,21 @@
 ** Spaceline
    #+BEGIN_SRC emacs-lisp
    (setq powerline-default-separator 'arrow)
-   (use-package all-the-icons)
-   (use-package spaceline-all-the-icons
-     :after spaceline
-	 :config (spaceline-all-the-icons-theme))
-   (setq spaceline-all-the-icons-separator-type 'arrow)
-   (setq spaceline-all-the-icons-clock-always-visible nil)
+   ;; (use-package all-the-icons)
+   ;; (use-package spaceline-all-the-icons
+     ;; :after spaceline
+	 ;; :config (spaceline-all-the-icons-theme))
+   ;; (setq spaceline-all-the-icons-separator-type 'arrow)
+   ;; (setq spaceline-all-the-icons-clock-always-visible nil)
 
-   (spaceline-toggle-all-the-icons-bookmark-on)
-   (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
-   (spaceline-toggle-all-the-icons-time-off)
-   (spaceline-toggle-all-the-icons-hud-off)
-   (spaceline-toggle-all-the-icons-position-off)
-   (setq spaceline-all-the-icons-icon-set-git-ahead 'commit)
-   (setq spaceline-all-the-icons-icon-set-window-numbering 'solid)
-   (setq spaceline-all-the-icons-slim-render t)
+   ;; (spaceline-toggle-all-the-icons-bookmark-on)
+   ;; (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
+   ;; (spaceline-toggle-all-the-icons-time-off)
+   ;; (spaceline-toggle-all-the-icons-hud-off)
+   ;; (spaceline-toggle-all-the-icons-position-off)
+   ;; (setq spaceline-all-the-icons-icon-set-git-ahead 'commit)
+   ;; (setq spaceline-all-the-icons-icon-set-window-numbering 'solid)
+   ;; (setq spaceline-all-the-icons-slim-render t)
    #+END_SRC
 ** Tramp
    #+BEGIN_SRC emacs-lisp
