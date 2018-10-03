@@ -48,42 +48,35 @@
 ** Window settings
    Transparency for the window.
    #+BEGIN_SRC emacs-lisp
-   (set-frame-parameter (selected-frame) 'alpha '(90 . 80))
+   (set-frame-parameter (selected-frame) 'alpha '(95 . 85))
    #+END_SRC
 * Key bindings
 ** General key bindings
   #+BEGIN_SRC emacs-lisp
-  (define-key evil-normal-state-map "L" 'evil-end-of-line)
-  (define-key evil-normal-state-map "H" 'evil-beginning-of-line)
-  (define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-line-down)
-  (define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-line-up)
-  (define-key evil-normal-state-map (kbd "C-S-j") (lambda () (interactive) (evil-scroll-line-down 5)))
-  (define-key evil-normal-state-map (kbd "C-S-k") (lambda () (interactive) (evil-scroll-line-up 5)))
-  (define-key evil-normal-state-map (kbd "C-h") 'evil-prev-buffer)
-  (define-key evil-normal-state-map (kbd "C-l") 'evil-next-buffer)
-  (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
-  (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
-  (define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
-  (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
-  ; (define-key evil-normal-state-map (kbd "<tab>") 'origami-toggle-node)
-  (define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
+	(define-key evil-normal-state-map "L" 'evil-end-of-line)
+	(define-key evil-normal-state-map "H" 'evil-beginning-of-line)
+	(define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
+	(define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
+	(define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
+	(define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
+	; (define-key evil-normal-state-map (kbd "<tab>") 'origami-toggle-node)
+	(define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
 
-  (define-key evil-insert-state-map (kbd "M-;") 'yas-expand)
-  (define-key evil-insert-state-map (kbd "C-j") 'evil-scroll-line-down)
-  (define-key evil-insert-state-map (kbd "C-k") 'evil-scroll-line-up)
-  (define-key evil-insert-state-map (kbd "C-S-j") (lambda () (interactive) (evil-scroll-line-down 5)))
-  (define-key evil-insert-state-map (kbd "C-S-k") (lambda () (interactive) (evil-scroll-line-up 5)))
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-prev-buffer)
-  (define-key evil-insert-state-map (kbd "C-l") 'evil-next-buffer)
-  (define-key evil-insert-state-map (kbd "s-j") 'move-text-line-down)
-  (define-key evil-insert-state-map (kbd "s-k") 'move-text-line-up)
-  (define-key evil-normal-state-map (kbd "s-j") 'move-text-line-down)
-  (define-key evil-normal-state-map (kbd "s-k") 'move-text-line-up)
+	(define-key evil-insert-state-map (kbd "M-;") 'yas-expand)
+	(define-key evil-insert-state-map (kbd "C-j") 'evil-scroll-line-down)
+	(define-key evil-insert-state-map (kbd "C-k") 'evil-scroll-line-up)
+	(define-key evil-insert-state-map (kbd "C-S-j") (lambda () (interactive) (evil-scroll-line-down 5)))
+	(define-key evil-insert-state-map (kbd "C-S-k") (lambda () (interactive) (evil-scroll-line-up 5)))
+	(define-key evil-insert-state-map (kbd "C-h") 'evil-prev-buffer)
+	(define-key evil-insert-state-map (kbd "C-l") 'evil-next-buffer)
+	(define-key evil-insert-state-map (kbd "s-j") 'move-text-line-down)
+	(define-key evil-insert-state-map (kbd "s-k") 'move-text-line-up)
 
-  (spacemacs/set-leader-keys
-    "ca" 'custom/copy-file-contents)
+	(spacemacs/set-leader-keys
+	  "da" 'delete-minibuffer-contents
+	  "ca" 'custom/copy-buffer-contents)
 
-  (evil-define-key 'normal coffee-mode-map (kbd "<tab>") 'origami-toggle-node)
+	(evil-define-key 'normal coffee-mode-map (kbd "<tab>") 'origami-toggle-node)
   #+END_SRC
 ** Key chord escapes
   #+BEGIN_SRC emacs-lisp
@@ -114,6 +107,55 @@
    (defengine google "https://google.com/search?q=%s" :keybinding "g")
    (defengine wiki "https://en.wikipedia.org/wiki/Search?search=%s" :keybinding "w")
    (engine/set-keymap-prefix (kbd "M-/"))
+   #+END_SRC
+** eshell
+   #+BEGIN_SRC emacs-lisp
+  (setq eshell-prompt-regexp "^[^ƒ]*ƒ ")
+
+  (defun current-dir-git-branch-string (pwd)
+	"Returns git branch name for current directory, or empty string if PWD is not in a git repo"
+	(interactive)
+	(when (and (eshell-search-path "git")
+			   (locate-dominating-file pwd ".git"))
+	  (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
+		(propertize (concat " ⤳ "
+							(if (> (length git-output) 0)
+								(substring git-output 0 -1)
+							  "(no brancho)")) 'face `(:foreground "green")))))
+
+  (defun pwd-repl-home (pwd)
+	(interactive)
+	(let* ((home (expand-file-name (getenv "HOME")))
+		   (home-len (length home)))
+	  (concat
+	   (if (and
+			(>= (length pwd) home-len)
+			(equal home (substring pwd 0 home-len)))
+		   (concat "~" (substring pwd home-len))
+		 pwd))))
+
+  (setq eshell-prompt-function
+		(lambda ()
+		  (concat
+		   (propertize "\n⟣━ " 'face `(:foreground "#ffcc66"))
+		   ((lambda (p-lst)
+			  (concat
+			   (propertize
+				(concat
+				 (mapconcat (lambda (elm) elm)
+							(butlast p-lst)
+							"/")
+				 "/") 'face `(:foreground "#f09000"))
+			   (propertize
+				(concat
+				 (mapconcat (lambda (str) str) (last p-lst) "")
+				 "/") 'face `(:foreground "#ff9900" :weight bold))))
+			(split-string (pwd-repl-home (eshell/pwd)) "/"))
+		   (or (current-dir-git-branch-string (eshell/pwd)))
+		   "\n"
+		   ;; (propertize (eshell/whoami) 'face `(:foreground "#0088ff"))
+		   (propertize "ƒ" 'face `(:foreground "#f03300"))
+		   (propertize " " 'face 'default))))
    #+END_SRC
 ** ESlint
    #+BEGIN_SRC emacs-lisp
@@ -164,12 +206,11 @@
    #+BEGIN_SRC emacs-lisp
 	(setq org-agenda-dim-blocked-tasks nil)
 	(setq org-agenda-use-tag-inheritance nil)
-	(setq tramp-method "ssh")
 
-	(custom-set-variables
-	 '(tramp-default-method tramp-method)
-	 '(tramp-default-user "carnifex")
-	 '(tramp-default-host "34.217.132.133"))
+	(setq tramp-method "ssh")
+	(setq org-tramp-user "carnifex")
+	(setq org-remote-host "34.217.132.133")
+	(setq org-remote-address (concat "/" tramp-method ":" org-tramp-user "@" org-remote-host ":"))
 
 	(setq org-todo-keywords
 		  '((sequence "TODO" "IN-PROGRESS" "BLOCKED" "|" "DONE" "POSTPONED" "CANCELLED")))
@@ -179,9 +220,9 @@
 	(setq org-reverse-note-order t)
 	(setq org-refile-use-outline-path t)
 
-	(setq org-projects-file (concat "/" tramp-method "::" "/home/carnifex/org/projects.org"))
-	(setq org-projects-inbox-file (concat "/" tramp-method "::" "/home/carnifex/org/projects-inbox.org"))
-	(setq org-ideas-file (concat "/" tramp-method "::" "/home/carnifex/org/ideas.org"))
+	(setq org-projects-file (concat org-remote-address "/home/carnifex/org/projects.org"))
+	(setq org-projects-inbox-file (concat org-remote-address "/home/carnifex/org/projects-inbox.org"))
+	(setq org-ideas-file (concat org-remote-address "/home/carnifex/org/ideas.org"))
 
 	(if (file-exists-p "~/org/work.org")
 		(progn
@@ -200,7 +241,7 @@
 
 	(setq org-capture-templates
 		  '(("t" "todo" entry (file+headline org-projects-inbox-file "inbox")
-			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :source:   emacs\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
+			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :source:   emacs\n  :END:\n" :prepend t :kill-buffer t)
 			("w" "work todo" entry (file+headline org-work-inbox-file "inbox")
 			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
 			("l" "linked todo" entry (file+headline org-work-inbox-file "inbox")
@@ -223,6 +264,9 @@
 
 	(calendar-set-date-style 'iso)
    #+END_SRC
+
+   #+RESULTS:
+
 ** Prettify symbols
    Replace keywords with symbols
    #+BEGIN_SRC emacs-lisp
@@ -257,22 +301,24 @@
    #+END_SRC
 ** Spaceline
    #+BEGIN_SRC emacs-lisp
-   (setq powerline-default-separator 'arrow)
-   ;; (use-package all-the-icons)
-   ;; (use-package spaceline-all-the-icons
-     ;; :after spaceline
-	 ;; :config (spaceline-all-the-icons-theme))
-   ;; (setq spaceline-all-the-icons-separator-type 'arrow)
-   ;; (setq spaceline-all-the-icons-clock-always-visible nil)
+	 (setq powerline-default-separator 'arrow)
+	 ;; (spaceline-toggle-mu4e-alert-segment-on)
 
-   ;; (spaceline-toggle-all-the-icons-bookmark-on)
-   ;; (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
-   ;; (spaceline-toggle-all-the-icons-time-off)
-   ;; (spaceline-toggle-all-the-icons-hud-off)
-   ;; (spaceline-toggle-all-the-icons-position-off)
-   ;; (setq spaceline-all-the-icons-icon-set-git-ahead 'commit)
-   ;; (setq spaceline-all-the-icons-icon-set-window-numbering 'solid)
-   ;; (setq spaceline-all-the-icons-slim-render t)
+	 (use-package all-the-icons)
+	 (use-package spaceline-all-the-icons
+	   :after spaceline
+	   :config (spaceline-all-the-icons-theme))
+	 (setq spaceline-all-the-icons-separator-type 'arrow)
+	 (setq spaceline-all-the-icons-clock-always-visible nil)
+
+	 (spaceline-toggle-all-the-icons-bookmark-on)
+	 (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
+	 (spaceline-toggle-all-the-icons-time-off)
+	 (spaceline-toggle-all-the-icons-hud-off)
+	 (spaceline-toggle-all-the-icons-position-off)
+	 (setq spaceline-all-the-icons-icon-set-git-ahead 'commit)
+	 (setq spaceline-all-the-icons-icon-set-window-numbering 'solid)
+	 (setq spaceline-all-the-icons-slim-render t)
    #+END_SRC
 ** Tramp
    #+BEGIN_SRC emacs-lisp
@@ -317,13 +363,22 @@
 	    (other-window 1)
         (find-file file))))
    #+END_SRC
-** Copy file contents
+** Copy buffer contents
    #+BEGIN_SRC emacs-lisp
-   (defun custom/copy-file-contents ()
+   (defun custom/copy-buffer-contents ()
      (interactive)
 	 (progn
 	   (let ((origin (point)))
          (mark-whole-buffer)
          (kill-ring-save (region-beginning) (region-end))
          (goto-char origin))))
+   #+END_SRC
+** Delete buffer contents
+   For some reason this is not working. Keeping it for future usage/testing.
+   #+BEGIN_SRC emacs-lisp
+   (defun custom/delete-buffer-contents ()
+	 (interactive)
+	 (progn
+	   (mark-whole-buffer)
+	   (delete-region)))
    #+END_SRC
