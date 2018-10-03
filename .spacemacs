@@ -48,9 +48,6 @@ values."
      helm
      javascript
      latex
-	 (mu4e :variables
-		   mu4e-mu-binary "/usr/local/bin/mu"
-	 	   mu4e-installation-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
      (org :variables
           org-enable-bootstrap-support t
           org-enable-reveal-js-support t)
