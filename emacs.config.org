@@ -112,7 +112,8 @@
   #+BEGIN_SRC emacs-lisp
   (spacemacs/set-leader-keys
 	"feD" 'open-custom-config
-	"fei" 'open-ideas-org-file)
+	"fei" 'open-ideas-org-file
+	"aop" 'custom/org-projectile-capture)
   #+END_SRC
 * Packages
   Configuration for used packages.
@@ -122,7 +123,9 @@
   #+END_SRC
 ** autosave
   #+BEGIN_SRC emacs-lisp
-  (add-hook 'focus-out-hook 'save-buffer)
+  (add-hook 'focus-out-hook '(lambda ()
+                              (if (not (string-match-p "\*" (buffer-name)))
+                                  (save-buffer))))
   #+END_SRC
 ** bookmarks
    #+BEGIN_SRC emacs-lisp
@@ -266,6 +269,9 @@
    #+BEGIN_SRC emacs-lisp
    (setq-default git-magit-status-fullscreen 1)
    (setq git-magit-status-fullscreen 1)
+
+   ;; TODO magit-bury-buffer-function to be changed
+   ;; magit-mode-get-buffers is a list of current repo buffers
    #+END_SRC
 ** neotree
    #+BEGIN_SRC emacs-lisp
@@ -388,20 +394,13 @@
 
 	  (setq org-todo-keywords
 			'((sequence "TODO(t)" "IN-PROGRESS(i)" "POSTPONED(p)" "BLOCKED(b)" "|" "DONE(d)" "CANCELLED(c)")))
-	 (setq org-todo-keyword-faces
-		   '(("TODO" :foreground "dark orange" :family "Monospace")
-			 ("IN-PROGRESS" :foreground "light sea green")
-			 ("BLOCKED" :foreground "firebrick")
-			 ("DONE" :foreground "lime green")
-			 ("CANCELLED" :foreground "magenta")
-			 ("POSTPONED" :foreground "dodger blue")))
-	  ;; (setq org-todo-keyword-faces
-	  ;; 	  '(("TODO" :foreground "dark orange" :family "Monospace" :weight "bold")
-	  ;; 	    ("IN-PROGRESS" :foreground "light sea green" :weight "bold")
-	  ;; 	    ("BLOCKED" :foreground "firebrick" :weight "bold")
-	  ;; 	    ("DONE" :foreground "lime green" :weight "bold")
-	  ;; 	    ("CANCELLED" :foreground "magenta" :weight "bold")
-	  ;; 	    ("POSTPONED" :foreground "dodger blue" :weight "bold")))
+ 	  (setq org-todo-keyword-faces
+		    '(("TODO" :foreground "dark orange" :family "Monospace")
+			  ("IN-PROGRESS" :foreground "light sea green")
+			  ("BLOCKED" :foreground "firebrick")
+			  ("DONE" :foreground "lime green")
+			  ("CANCELLED" :foreground "magenta")
+			  ("POSTPONED" :foreground "dodger blue")))
 
 	  (add-hook 'org-mode-hook
 				(lambda () (face-remap-add-relative 'default :family "Monospace")))
@@ -410,11 +409,7 @@
 ** org-projectile
    Settings for org-projectile and capture templates
    #+BEGIN_SRC emacs-lisp
-	 (setq org-projectile-capture-template "* %?\n")
-	 (setq org-projectile-subheading-selection t)
-	 (org-context-activate)
    #+END_SRC
-
 ** prettify symbols
    Replace keywords with symbols
    #+BEGIN_SRC emacs-lisp
@@ -486,7 +481,7 @@
    ;; (setq undo-tree-auto-save-history t)
    #+END_SRC
 * Functions
-** Fix spelling errors
+** fix spelling errors
    #+BEGIN_SRC emacs-lisp
    (defun custom/ispell-fix-then-abbrev (p)
 	"Fix mispelled word with ispell-word, then create an abbrevation for that."
@@ -501,7 +496,7 @@
 				   (if p local-abbrev-table global-abbrev-table)
 				   bef aft)))))
    #+END_SRC
-** Open in new or existing window
+** open in new or existing window
    #+BEGIN_SRC emacs-lisp
   (defun custom/open-in-split (file)
    	"get window count, if it's only one, open new window to the right, load file"
@@ -514,7 +509,7 @@
 	    (other-window 1)
         (find-file file))))
    #+END_SRC
-** Copy buffer contents
+** copy buffer contents
    #+BEGIN_SRC emacs-lisp
    (defun custom/copy-buffer-contents ()
      (interactive)
@@ -524,16 +519,7 @@
          (kill-ring-save (region-beginning) (region-end))
          (goto-char origin))))
    #+END_SRC
-** Delete buffer contents
-   For some reason this is not working. Keeping it for future usage/testing.
-   #+BEGIN_SRC emacs-lisp
-   (defun custom/delete-buffer-contents ()
-	 (interactive)
-	 (progn
-	   (mark-whole-buffer)
-	   (delete-region)))
-   #+END_SRC
-** Open new buffer for js2-jump-to-definition
+** open new buffer for js2-jump-to-definition
    #+BEGIN_SRC emacs-lisp
    (defun custom/js2-jump-to-definition-other-window ()
      (interactive)
@@ -545,6 +531,7 @@
 ** send habits to l3
    #+BEGIN_SRC emacs-lisp
 	  (defun custom/get-tags-json (tags)
+	    "create a json string for the list of tags"
 		(setq list tags)
 		(setq result "[")
 		(while list
@@ -563,6 +550,7 @@
 		:data (concat "{ \"input\":\"" title "\", \"tags\": " (custom/get-tags-json tags) " }")))
 
 	 (defun custom/habit-done-hook ()
+	   "check if it's a habit and send it to l3"
 	   (if (and (member org-state org-done-keywords) (equal "habit" (org-entry-get nil "STYLE")))
 		   (custom/send-to-l3 (org-entry-get nil "ITEM") (append (split-string (org-entry-get nil "TAGS") ":" t) '("org-mode")))
 		 nil))
@@ -573,16 +561,16 @@
 ** whitespace and indentation
   #+BEGIN_SRC emacs-lisp
   (defun custom/get-line ()
-	;; get text of current line
-	  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+	"get text of current line"
+	(buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
   (defun custom/get-indent (str)
-	;; get indent for str
+	"get indent for str"
 	(setq trimmed (string-trim-left str))
 	(- (length str) (length trimmed)))
 
   (defun custom/get-current-indent ()
-	;; get indent level for current line
+	"get indent level for current line"
 	(setq text (custom/get-line))
 	(custom/get-indent text))
 
@@ -623,5 +611,56 @@
 			  (car filtered)
 			(concat path "project.org"))))))
    #+END_SRC
+** org-projectile-capture
+   #+BEGIN_SRC emacs-lisp
+   (defun custom/org-projectile-capture-templates-set-path ()
+     (let ((org-file-path (org-projectile-get-project-todo-file)))
+	   `(("t" "todo" entry (file+headline ,org-file-path "inbox")
+	      "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)
+	     ("f" "feature" entry (file+headline ,org-file-path "inbox")
+	      "* FEATURE %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)
+	     ("d" "dev" entry (file+headline ,org-file-path "inbox")
+	      "* DEV %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)
+	     ("b" "bug" entry (file+headline ,org-file-path "inbox")
+	      "* BUG %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t))))
 
-
+   (defun custom/org-projectile-capture ()
+     (interactive)
+     (let* ((org-projectile-capture-templates (custom/org-projectile-capture-templates-set-path))
+   		 (entry (org-mks org-projectile-capture-templates
+   						 "Select a capture template\n========================="
+   						 "Template key: "
+   						 '(("C" "Customize org-capture-templates")
+   						   ("q" "Abort"))))
+   		 (orig-buf (current-buffer))
+   		 (annotation (if (and (boundp 'org-capture-link-is-already-stored)
+   							  org-capture-link-is-already-stored)
+   						 (plist-get org-store-link-plist :annotation)
+   					   (ignore-errors (org-store-link nil))))
+   		 initial)
+   	(setq initial (or org-capture-initial
+   					  (and (org-region-active-p)
+   						   (buffer-substring (point) (mark)))))
+   	(org-capture-set-plist entry)
+   	(org-capture-get-template)
+   	(org-capture-put :original-buffer orig-buf
+   					 :original-file (or (buffer-file-name orig-buf)
+   										(and (featurep 'dired)
+   											 (car (rassq orig-buf
+   														 dired-buffers))))
+   					 :original-file-nondirectory
+   					 (and (buffer-file-name orig-buf)
+   						  (file-name-nondirectory
+   						   (buffer-file-name orig-buf)))
+   					 :annotation annotation
+   					 :initial initial
+   					 :return-to-wconf (current-window-configuration)
+   					 :default-time
+   					 (or org-overriding-default-time
+   						 (org-current-time)))
+   	(org-capture-set-target-location)
+   	(org-capture-place-template
+   	 (eq (car (org-capture-get :target)) 'function))
+   	;; (org-capture-insert-template-here)
+   	))
+	#+END_SRC
