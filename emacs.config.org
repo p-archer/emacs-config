@@ -14,76 +14,91 @@
    #+BEGIN_SRC emacs-lisp
    (setq python-shell-interpreter "python2")
    #+END_SRC
-** Visual bookmarks
-   #+BEGIN_SRC emacs-lisp
-   (require 'bm)
-   (define-key evil-normal-state-map (kbd "M-b") 'bm-toggle)
-   (define-key evil-normal-state-map (kbd "M-m") 'bm-toggle)
-   (define-key evil-normal-state-map (kbd "<left>") 'bm-previous)
-   (define-key evil-normal-state-map (kbd "<right>") 'bm-next)
-   #+END_SRC
 ** Whitespaces
    #+BEGIN_SRC emacs-lisp
-   (setq whitespace-style '(face tabs tab-mark trailing))
-   (setq whitespace-display-mappings
-		 '((space-mark 32 [183])
-		   (tab-mark 9 [124 9])))
+	 (require 'whitespace)
+	 (setq whitespace-style '(face tabs tab-mark))
+	 (setq whitespace-display-mappings
+		   '((space-mark 32 [183])
+			 (tab-mark 9 [124 9])))
 
-   ;; make sure whitespaces are shown in the following modes
-   (add-hook 'js2-mode-hook (lambda() (whitespace-mode t)))
-   (add-hook 'web-mode-hook (lambda () (whitespace-mode t)))
-   (add-hook 'less-mode-hook (lambda () (whitespace-mode t)))
-   (add-hook 'css-mode-hook (lambda () (whitespace-mode t)))
-   (add-hook 'js-jsx-mode-hook (lambda () (whitespace-mode t)))
+	 (set-face-attribute 'whitespace-tab nil :background 'unspecified :weight 'normal :foreground "#626272")
+	 (setq-default line-spacing 3)
 
-   (add-hook 'js2-mode-hook (lambda() (setq truncate-lines 1)))
-   (add-hook 'web-mode-hook (lambda () (setq truncate-lines 1)))
-   (add-hook 'less-mode-hook (lambda () (setq truncate-lines 1)))
-   (add-hook 'css-mode-hook (lambda () (setq truncate-lines 1)))
-   (add-hook 'js-jsx-mode-hook (lambda () (setq truncate-lines 1)))
-   (add-hook 'coffee-mode-hook (lambda () (setq truncate-lines 1)))
+	 (add-to-list 'origami-parser-alist '(scss-mode . origami-c-style-parser))
+	 (add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
 
-   (spacemacs/toggle-vi-tilde-fringe-off)
+	 ;; make sure whitespaces are shown in the following modes
+	 (add-hook 'js2-mode-hook (lambda() (whitespace-mode t)))
+	 (add-hook 'web-mode-hook (lambda () (whitespace-mode t)))
+	 (add-hook 'less-mode-hook (lambda () (whitespace-mode t)))
+	 (add-hook 'css-mode-hook (lambda () (whitespace-mode t)))
+	 (add-hook 'js-jsx-mode-hook (lambda () (whitespace-mode t)))
+
+	 (add-hook 'js2-mode-hook (lambda() (setq truncate-lines 1)))
+	 (add-hook 'web-mode-hook (lambda () (setq truncate-lines 1)))
+	 (add-hook 'less-mode-hook (lambda () (setq truncate-lines 1)))
+	 (add-hook 'css-mode-hook (lambda () (setq truncate-lines 1)))
+	 (add-hook 'js-jsx-mode-hook (lambda () (setq truncate-lines 1)))
+	 (add-hook 'coffee-mode-hook (lambda () (setq truncate-lines 1)))
+
+	 (spacemacs/toggle-vi-tilde-fringe-off)
    #+END_SRC
 ** Window settings
    Transparency for the window.
    #+BEGIN_SRC emacs-lisp
    (set-frame-parameter (selected-frame) 'alpha '(95 . 85))
+   (fringe-mode '(24 . 12))
    #+END_SRC
 * Key bindings
 ** General key bindings
   #+BEGIN_SRC emacs-lisp
-  (define-key evil-normal-state-map "L" 'evil-end-of-line)
-  (define-key evil-normal-state-map "H" 'evil-beginning-of-line)
-  (define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-line-down)
-  (define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-line-up)
-  (define-key evil-normal-state-map (kbd "C-S-j") (lambda () (interactive) (evil-scroll-line-down 5)))
-  (define-key evil-normal-state-map (kbd "C-S-k") (lambda () (interactive) (evil-scroll-line-up 5)))
-  (define-key evil-normal-state-map (kbd "C-h") 'evil-prev-buffer)
-  (define-key evil-normal-state-map (kbd "C-l") 'evil-next-buffer)
-  (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
-  (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
-  (define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
-  (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
-  (define-key evil-normal-state-map (kbd "s-j") 'move-text-line-down)
-  (define-key evil-normal-state-map (kbd "s-k") 'move-text-line-up)
-  (define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
+	(define-key evil-normal-state-map "L" 'evil-end-of-line)
+	(define-key evil-normal-state-map "H" 'evil-beginning-of-line)
+	(define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-line-down)
+	(define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-line-up)
+	(define-key evil-normal-state-map (kbd "C-S-j") (lambda () (interactive) (evil-scroll-line-down 5)))
+	(define-key evil-normal-state-map (kbd "C-S-k") (lambda () (interactive) (evil-scroll-line-up 5)))
+	(define-key evil-normal-state-map (kbd "C-h") 'evil-prev-buffer)
+	(define-key evil-normal-state-map (kbd "C-l") 'evil-next-buffer)
+	(define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
+	(define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
+	(define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
+	(define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
+	(define-key evil-normal-state-map (kbd "s-j") 'move-text-line-down)
+	(define-key evil-normal-state-map (kbd "s-k") 'move-text-line-up)
+	(define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
+	(define-key evil-normal-state-map (kbd "[[") 'custom/goto-direct-parent-indent)
+	(define-key evil-normal-state-map (kbd "]]") 'custom/goto-direct-parent-outdent)
 
-  (define-key evil-insert-state-map (kbd "M-;") 'yas-expand)
-  (define-key evil-insert-state-map (kbd "C-j") 'evil-scroll-line-down)
-  (define-key evil-insert-state-map (kbd "C-k") 'evil-scroll-line-up)
-  (define-key evil-insert-state-map (kbd "C-S-j") (lambda () (interactive) (evil-scroll-line-down 5)))
-  (define-key evil-insert-state-map (kbd "C-S-k") (lambda () (interactive) (evil-scroll-line-up 5)))
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-prev-buffer)
-  (define-key evil-insert-state-map (kbd "C-l") 'evil-next-buffer)
-  (define-key evil-insert-state-map (kbd "s-j") 'move-text-line-down)
-  (define-key evil-insert-state-map (kbd "s-k") 'move-text-line-up)
+	(define-key evil-insert-state-map (kbd "s-;") 'yas-expand)
+	(define-key evil-insert-state-map (kbd "s-k") (lambda () (interactive) (evil-previous-line) (evil-end-of-line)))
+	(define-key evil-insert-state-map (kbd "s-j") (lambda () (interactive) (evil-next-line) (evil-beginning-of-line)))
+	(define-key evil-insert-state-map (kbd "C-j") 'evil-scroll-line-down)
+	(define-key evil-insert-state-map (kbd "C-k") 'evil-scroll-line-up)
+	(define-key evil-insert-state-map (kbd "C-S-j") (lambda () (interactive) (evil-scroll-line-down 5)))
+	(define-key evil-insert-state-map (kbd "C-S-k") (lambda () (interactive) (evil-scroll-line-up 5)))
+	(define-key evil-insert-state-map (kbd "C-h") 'evil-prev-buffer)
+	(define-key evil-insert-state-map (kbd "C-l") 'evil-next-buffer)
 
-	(spacemacs/set-leader-keys
-	  "da" 'delete-minibuffer-contents
-	  "ca" 'custom/copy-buffer-contents)
+	(require 'general)
+	(general-evil-setup)
+	(general-nmap "m" 
+	              (general-key-dispatch 'self-insert-command
+				   :timeout 0.25
+				   "t" 'evil-window-top
+				   "b" 'evil-window-bottom
+				   "m" '
+				   evil-window-middle))
 
-	(evil-define-key 'normal coffee-mode-map (kbd "<tab>") 'origami-toggle-node)
+	  (spacemacs/set-leader-keys
+		"da" 'delete-minibuffer-contents
+		"ca" 'custom/copy-buffer-contents)
+
+	  (evil-define-key 'normal coffee-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
+	  (evil-define-key 'normal js2-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
+	  (evil-define-key 'normal scss-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
+	  (evil-define-key 'normal css-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
   #+END_SRC
 ** Key chord escapes
   #+BEGIN_SRC emacs-lisp
@@ -105,7 +120,32 @@
    (add-to-list 'package-archives
                 '("melpa-stable" . "https://stable.melpa.org/packages/") t)
   #+END_SRC
-** Engine mode
+** autosave
+  #+BEGIN_SRC emacs-lisp
+  (add-hook 'focus-out-hook 'save-buffer)
+  #+END_SRC
+** bookmarks
+   #+BEGIN_SRC emacs-lisp
+   (require 'bm)
+   (define-key evil-normal-state-map (kbd "F3") 'bm-show-all)
+   (define-key evil-normal-state-map (kbd "S-m") 'bm-toggle)
+   (define-key evil-normal-state-map (kbd "M-m") 'bm-toggle)
+   (define-key evil-normal-state-map (kbd "<left>") 'bm-previous)
+   (define-key evil-normal-state-map (kbd "<right>") 'bm-next)
+
+   (setq bm-marker 'bm-marker-right)
+   (setq bm-repository-file "~/.emacs.d/bm-repo")
+   (setq bm-restore-repository-on-load t)
+   (setq-default bm-buffer-persistence t)
+   (add-hook 'after-init-hook 'bm-repository-load)
+   (add-hook 'kill-buffer-hook #'bm-buffer-save)
+   (add-hook 'kill-emacs-hook (lambda nil
+                                  (bm-buffer-save-all)
+								  (bm-repository-save)))
+   (add-hook 'after-save-hook #'bm-buffer-save)
+   (add-hook 'find-file-hooks #'bm-buffer-restore)
+   #+END_SRC
+** engine mode
    Package to search in browser.
    #+BEGIN_SRC emacs-lisp
    (require 'engine-mode)
@@ -114,68 +154,82 @@
    (defengine google "https://google.com/search?q=%s" :keybinding "g")
    (defengine wiki "https://en.wikipedia.org/wiki/Search?search=%s" :keybinding "w")
    (engine/set-keymap-prefix (kbd "M-/"))
+   (engine/set-keymap-prefix (kbd "S-/"))
    #+END_SRC
 ** eshell
    #+BEGIN_SRC emacs-lisp
-  (setq eshell-prompt-regexp "^[^ƒ]*ƒ ")
+	 (setq eshell-prompt-regexp "^[^ƒ]*ƒ ")
 
-  (defun current-dir-git-branch-string (pwd)
-	"Returns git branch name for current directory, or empty string if PWD is not in a git repo"
-	(interactive)
-	(when (and (eshell-search-path "git")
-			   (locate-dominating-file pwd ".git"))
-	  (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
-		(propertize (concat " ⤳ "
-							(if (> (length git-output) 0)
-								(substring git-output 0 -1)
-							  "(no brancho)")) 'face `(:foreground "green")))))
+	 (defun current-dir-git-branch-string (pwd)
+	   "Returns git branch name for current directory, or empty string if PWD is not in a git repo"
+	   (interactive)
+	   (when (and (eshell-search-path "git")
+				  (locate-dominating-file pwd ".git"))
+		 (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
+		   (propertize (concat " ⤳ "
+							   (if (> (length git-output) 0)
+								   (substring git-output 0 -1)
+								 "(no brancho)")) 'face `(:foreground "green")))))
 
-  (defun pwd-repl-home (pwd)
-	(interactive)
-	(let* ((home (expand-file-name (getenv "HOME")))
-		   (home-len (length home)))
-	  (concat
-	   (if (and
-			(>= (length pwd) home-len)
-			(equal home (substring pwd 0 home-len)))
-		   (concat "~" (substring pwd home-len))
-		 pwd))))
+	 (defun pwd-repl-home (pwd)
+	   (interactive)
+	   (let* ((home (expand-file-name (getenv "HOME")))
+			  (home-len (length home)))
+		 (concat
+		  (if (and
+			   (>= (length pwd) home-len)
+			   (equal home (substring pwd 0 home-len)))
+			  (concat "~" (substring pwd home-len))
+			pwd))))
 
-  (setq eshell-prompt-function
-		(lambda ()
-		  (concat
-		   (propertize "\n⟣━ " 'face `(:foreground "#ffcc66"))
-		   ((lambda (p-lst)
-			  (concat
-			   (propertize
-				(concat
-				 (mapconcat (lambda (elm) elm)
-							(butlast p-lst)
-							"/")
-				 "/") 'face `(:foreground "#f09000"))
-			   (propertize
-				(concat
-				 (mapconcat (lambda (str) str) (last p-lst) "")
-				 "/") 'face `(:foreground "#ff9900" :weight bold))))
-			(split-string (pwd-repl-home (eshell/pwd)) "/"))
-		   (or (current-dir-git-branch-string (eshell/pwd)))
-		   "\n"
-		   ;; (propertize (eshell/whoami) 'face `(:foreground "#0088ff"))
-		   (propertize "ƒ" 'face `(:foreground "#f03300"))
-		   (propertize " " 'face 'default))))
+	 (setq eshell-prompt-function
+		   (lambda ()
+			 (concat
+			  (propertize "\n⟣━ " 'face `(:foreground "#ffcc66"))
+			  ((lambda (p-lst)
+				 (concat
+				  (propertize
+				   (concat
+					(mapconcat (lambda (elm) elm)
+							   (butlast p-lst)
+							   "/")
+					"/") 'face `(:foreground "#f09000"))
+				  (propertize
+				   (concat
+					(mapconcat (lambda (str) str) (last p-lst) "")
+					"/") 'face `(:foreground "#ff9900"))))
+			   (split-string (pwd-repl-home (eshell/pwd)) "/"))
+			  ;; (or (current-dir-git-branch-string (eshell/pwd)))
+			  "\n"
+			  (propertize (eshell/whoami) 'face `(:foreground "#0088ff"))
+			  (propertize " " 'face 'default)
+			  (propertize "ƒ" 'face `(:foreground "#f03300"))
+			  (propertize " " 'face 'default))))
+
+     ;; fix for slowness
+     (defun custom/remove-eshell-pcomplete ()
+	   (remove-hook 'completion-at-point-functions #'pcomplete-completions-at-point t))
+
+ 	 (defun custom/term-close (&rest args)
+	   (when (null (get-buffer-process (current-buffer)))
+		 (kill-buffer (current-buffer))
+		 (delete-window)))
+
+	 (advice-add 'term-handle-exit :after #'custom/term-close)
+	 (add-hook 'eshell-mode-hook #'custom/remove-eshell-pcomplete)
    #+END_SRC
-** ESlint
+** eslint
    #+BEGIN_SRC emacs-lisp
 	 (setq flycheck-eslintrc "~/.eslintrc")
    #+END_SRC
-** Eww
+** eww
    #+BEGIN_SRC emacs-lisp
    (setq shr-inhibit-images t)
    #+END_SRC
-** Flycheck
+** flycheck
    #+BEGIN_SRC emacs-lisp
    #+END_SRC
-** Flyspell auto-correct
+** flyspell auto-correct
    #+BEGIN_SRC emacs-lisp
    (spacemacs/set-leader-keys
    "SC" 'custom/ispell-fix-then-abbrev)
@@ -183,54 +237,59 @@
    (setq save-abbrevs t)
    (setq-default abbrev-mode t)
    #+END_SRC
-** Ispell dictionary
+** ispell dictionary
    #+BEGIN_SRC emacs-lisp
    ;; (setq ispell-personal-dictionary "~/emacs-config/ispell.eng.pws")
    #+END_SRC
-** JS2-mode
+** js2-mode
    #+BEGIN_SRC emacs-lisp
 	 (setq js2-mode-show-strict-warnings nil)
 	 (setq js2-mode-show-parse-errors nil)
+
+	 (require 'indium)
+	 (add-hook 'js2-mode-hook #'indium-interaction-mode)
+
+	 (spacemacs/set-leader-keys-for-major-mode 'js2-mode
+	   "gg" 'js2-jump-to-definition
+	   "gG" 'custom/js2-jump-to-definition-other-window)
    #+END_SRC
-** Markdown
+** linum
+   #+BEGIN_SRC emacs-lisp
+   (setq linum-relative-backend 'display-line-numbers-mode)
+   #+END_SRC
+** markdown
    #+BEGIN_SRC emacs-lisp
   (custom-set-variables
    '(markdown-command "github-markdown-render"))
    #+END_SRC
-** Magit
+** magit
    #+BEGIN_SRC emacs-lisp
    (setq-default git-magit-status-fullscreen 1)
    (setq git-magit-status-fullscreen 1)
    #+END_SRC
-** Neotree
+** neotree
    #+BEGIN_SRC emacs-lisp
    (setq neo-theme 'icons)
    (global-set-key [f2] 'neotree-find-project-root)
    (setq neo-window-position 'right)
    #+END_SRC
-** Org settings
-   Basic general org settings.
+** org-agenda
    #+BEGIN_SRC emacs-lisp
-	(setq org-agenda-dim-blocked-tasks nil)
-	(setq org-agenda-use-tag-inheritance nil)
+   (setq org-agenda-dim-blocked-tasks nil)
+   (setq org-agenda-use-tag-inheritance nil)
+   (setq org-agenda-window-setup 'current-window)
 
+	;; remote org files
 	(setq tramp-method "ssh")
 	(setq org-tramp-user "carnifex")
 	(setq org-remote-host "34.217.132.133")
 	(setq org-remote-address (concat "/" tramp-method ":" org-tramp-user "@" org-remote-host ":"))
 
-	(setq org-todo-keywords
-		  '((sequence "TODO" "IN-PROGRESS" "BLOCKED" "|" "DONE" "POSTPONED" "CANCELLED")))
-	(setq org-enforce-todo-dependencies t)
-	(setq org-ellipsis " ▼")
-	(setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
-	(setq org-reverse-note-order t)
-	(setq org-refile-use-outline-path t)
-
 	(setq org-projects-file (concat org-remote-address "/home/carnifex/org/projects.org"))
 	(setq org-projects-inbox-file (concat org-remote-address "/home/carnifex/org/projects-inbox.org"))
 	(setq org-ideas-file (concat org-remote-address "/home/carnifex/org/ideas.org"))
 
+	;; files to use in agenda view
 	(if (file-exists-p "~/org/work.org")
 		(progn
 		  (setq org-work-file "~/org/work.org")
@@ -239,6 +298,12 @@
 		(setq org-work-file nil)
 		(setq org-work-inbox-file nil)))
 
+	(if org-work-file
+		(setq org-agenda-files
+			  (list org-projects-inbox-file org-projects-file org-work-file org-work-inbox-file))
+	    (setq org-agenda-files
+			  (list org-projects-inbox-file org-projects-file)))
+
 	(defun open-custom-config ()
 	  (interactive)
 	  (find-file "~/emacs-config/emacs.config.org"))
@@ -246,6 +311,51 @@
 	  (interactive)
 	  (find-file org-ideas-file))
 
+	;; agenda views
+	(setq org-agenda-custom-commands
+		  '(("d" "default"
+			((agenda ""
+					  ((org-agenda-overriding-header "Week's schedule")
+					  (org-agenda-show-log t)
+					  (org-agenda-log-mode-items '(state))
+					  (org-agenda-use-time-grid nil)
+					  (org-agenda-skip-function '(org-agenda-skip-entry-if 'regexp "STYLE:\s*habit"))
+					  (org-agenda-sorting-strategy
+						'(todo-state-down priority-down))
+					  (org-habit-show-habits nil)))
+			  (todo "IN-PROGRESS"
+					((org-agenda-overriding-header "Active")))
+			  (todo '("TODO" "BLOCKED" "POSTPONED")
+					((org-agenda-overriding-header "Pending")
+					(org-agenda-tags-todo-honor-ignore-options t)
+					(org-agenda-todo-ignore-scheduled t)))
+			  (tags-todo "SCHEDULED<\"<-1d>\"|DEADLINE<\"<-1d>\""
+						((org-agenda-overriding-header "Overdue")))
+			  (agenda ""
+					  ((org-agenda-overriding-header "Habits")
+					  (org-agenda-use-time-grid nil)
+					  (org-agenda-span 'day)
+					  (org-agenda-ndays 1)
+					  (org-agenda-start-on-weekday nil)
+					  (org-agenda-start-day "+0d")
+					  (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "STYLE:\s*habit"))
+					  (org-habit-show-habits t)))))
+			("w" "work"
+			((agenda ""
+					  ((org-agenda-overriding-header "Work todos")
+					  (org-agenda-files '("~/org/work.org" "~/org/work-inbox.org"))
+					  (org-agenda-show-log t)
+					  (org-agenda-log-mode-items '(state))
+					  (org-agenda-use-time-grid nil)))
+			  (tags-todo "@oncall"
+						((org-agenda-overriding-header "On-call")
+						  (org-agenda-files '("~/org/work.org" "~/org/work-inbox.org"))))
+			  (todo "IN-PROGRESS"
+					((org-agenda-overriding-header "Active")
+					(org-agenda-files '("~/org/work.org" "~/org/work-inbox.org"))))))))
+   #+END_SRC
+** org-capture
+   #+BEGIN_SRC emacs-lisp
 	(setq org-capture-templates
 		  '(("t" "todo" entry (file+headline org-projects-inbox-file "inbox")
 			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :source:   emacs\n  :END:\n" :prepend t :kill-buffer t)
@@ -255,26 +365,57 @@
 			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :link: %a\n  :END:\n%^{effort}p" :prepend t :kill-buffer t)
 			("i" "idea/someday" entry (file+headline org-ideas-file)
 			 "* TODO %?\n  :PROPERTIES:\n  :added: %T\n  :END:\n" :prepend t :kill-buffer t)))
+   #+END_SRC
+** org-mode
+   Basic general org settings.
+   #+BEGIN_SRC emacs-lisp
+	  ;; general stuff
+	  (setq projectile-mode-line "projectile")
+	  (setq org-modules '(org-gnus org-habit org-id org-info org-w3m))
 
-	(setq org-refile-targets '((org-projects-file :maxlevel . 1)
-							   (org-work-file :maxlevel . 1)))
-	(setq org-outline-path-complete-in-steps nil)
-	(setq org-feed-save-after-adding t)
-	(setq org-agenda-window-setup 'current-window)
-	(setq org-bullets-bullet-list '("Φ"))
+	  (setq org-enforce-todo-dependencies t)
+	  (setq org-ellipsis " ▼")
+	  (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
+	  (setq org-reverse-note-order t)
+	  (setq org-refile-use-outline-path t)
 
-	(if org-work-file
-		(setq org-agenda-files
-			  (list org-projects-inbox-file org-projects-file org-work-file org-work-inbox-file))
-	    (setq org-agenda-files
-			  (list org-projects-inbox-file org-projects-file)))
+	  (setq org-refile-targets '((org-projects-file :maxlevel . 1)
+								 (org-work-file :maxlevel . 1)))
+	  (setq org-outline-path-complete-in-steps nil)
+	  (setq org-feed-save-after-adding t)
+	  (setq org-bullets-bullet-list '("▶"))
+	  (setq org-tags-column -140)
 
-	(calendar-set-date-style 'iso)
+	  (setq org-todo-keywords
+			'((sequence "TODO(t)" "IN-PROGRESS(i)" "POSTPONED(p)" "BLOCKED(b)" "|" "DONE(d)" "CANCELLED(c)")))
+	 (setq org-todo-keyword-faces
+		   '(("TODO" :foreground "dark orange" :family "Monospace")
+			 ("IN-PROGRESS" :foreground "light sea green")
+			 ("BLOCKED" :foreground "firebrick")
+			 ("DONE" :foreground "lime green")
+			 ("CANCELLED" :foreground "magenta")
+			 ("POSTPONED" :foreground "dodger blue")))
+	  ;; (setq org-todo-keyword-faces
+	  ;; 	  '(("TODO" :foreground "dark orange" :family "Monospace" :weight "bold")
+	  ;; 	    ("IN-PROGRESS" :foreground "light sea green" :weight "bold")
+	  ;; 	    ("BLOCKED" :foreground "firebrick" :weight "bold")
+	  ;; 	    ("DONE" :foreground "lime green" :weight "bold")
+	  ;; 	    ("CANCELLED" :foreground "magenta" :weight "bold")
+	  ;; 	    ("POSTPONED" :foreground "dodger blue" :weight "bold")))
+
+	  (add-hook 'org-mode-hook
+				(lambda () (face-remap-add-relative 'default :family "Monospace")))
+
+   #+END_SRC
+** org-projectile
+   Settings for org-projectile and capture templates
+   #+BEGIN_SRC emacs-lisp
+	 (setq org-projectile-capture-template "* %?\n")
+	 (setq org-projectile-subheading-selection t)
+	 (org-context-activate)
    #+END_SRC
 
-   #+RESULTS:
-
-** Prettify symbols
+** prettify symbols
    Replace keywords with symbols
    #+BEGIN_SRC emacs-lisp
 
@@ -293,20 +434,22 @@
    (add-hook 'coffee-mode-hook 'register-prettify)
    (add-hook 'react-mode-hook 'register-prettify)
 
-   (global-prettify-symbols-mode 1)
+   (global-prettify-symbols-mode 0)
    #+END_SRC
-** Rainbow mode
+** rainbow mode
    #+BEGIN_SRC emacs-lisp
    (add-hook 'css-mode-hook (lambda () (rainbow-mode t)))
    (add-hook 'less-mode-hook (lambda () (rainbow-mode t)))
    (add-hook 'scss-mode-hook (lambda () (rainbow-mode t)))
    (add-hook 'sass-mode-hook (lambda () (rainbow-mode t)))
    #+END_SRC
-** Recentf
+** recentf
    #+BEGIN_SRC emacs-lisp
-   (setq recentf-max-saved-items 100)
+   (setq recentf-max-saved-items 50)
+   (setq persp-auto-save-opt 0)
+   (setq recentf-auto-cleanup 'mode)
    #+END_SRC
-** Spaceline
+** spaceline
    #+BEGIN_SRC emacs-lisp
 	 (setq powerline-default-separator 'arrow)
 	 ;; (spaceline-toggle-mu4e-alert-segment-on)
@@ -327,16 +470,17 @@
 	 (setq spaceline-all-the-icons-icon-set-window-numbering 'solid)
 	 (setq spaceline-all-the-icons-slim-render t)
    #+END_SRC
-** Tramp
+** tramp
    #+BEGIN_SRC emacs-lisp
+   (setq tramp-debug-buffer t)
+   (setq tramp-verbose 10)
    (setq tramp-copy-size-limit nil)
-   (setq tramp-verbose 3)
-   (setq remote-file-name-inhibit-cache t)
+   (setq remote-file-name-inhibit-cache nil)
 
-   (add-to-list 'backup-directory-alist
-                (cons tramp-file-name-regexp nil))
+   ;; (add-to-list 'backup-directory-alist
+                ;; (cons tramp-file-name-regexp nil))
    #+END_SRC
-** Undo tree
+** undo tree
    #+BEGIN_SRC emacs-lisp
    ;; (setq undo-tree-history-directory-alist '(("." . "~/emacs-config/.undo")))
    ;; (setq undo-tree-auto-save-history t)
@@ -389,3 +533,95 @@
 	   (mark-whole-buffer)
 	   (delete-region)))
    #+END_SRC
+** Open new buffer for js2-jump-to-definition
+   #+BEGIN_SRC emacs-lisp
+   (defun custom/js2-jump-to-definition-other-window ()
+     (interactive)
+	 (let ((pos (point))
+	   (switch-to-buffer-other-window (current-buffer))
+	   (goto-char pos)
+	   (js2-jump-to-definition))))
+   #+END_SRC
+** send habits to l3
+   #+BEGIN_SRC emacs-lisp
+	  (defun custom/get-tags-json (tags)
+		(setq list tags)
+		(setq result "[")
+		(while list
+		  (setq result (concat result " { \"name\": \"" (car list) "\" }"))
+		  (if (cdr list)
+			  (setq result (concat result ",")))
+		  (setq list (cdr list)))
+		(concat result " ]"))
+
+	  (defun custom/send-to-l3 (title tags)
+		(web-http-post
+		(lambda (response status data)
+		  (message "response %S %S %S" response status data))
+		:url "http://34.217.132.133:4000/log"
+		:mime-type "application/json"
+		:data (concat "{ \"input\":\"" title "\", \"tags\": " (custom/get-tags-json tags) " }")))
+
+	 (defun custom/habit-done-hook ()
+	   (if (and (member org-state org-done-keywords) (equal "habit" (org-entry-get nil "STYLE")))
+		   (custom/send-to-l3 (org-entry-get nil "ITEM") (append (split-string (org-entry-get nil "TAGS") ":" t) '("org-mode")))
+		 nil))
+
+	 (remove-hook 'org-after-todo-state-change-hook 'custom/habit-done-hook)
+	 (add-hook 'org-after-todo-state-change-hook 'custom/habit-done-hook)
+   #+END_SRC
+** whitespace and indentation
+  #+BEGIN_SRC emacs-lisp
+  (defun custom/get-line ()
+	;; get text of current line
+	  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+
+  (defun custom/get-indent (str)
+	;; get indent for str
+	(setq trimmed (string-trim-left str))
+	(- (length str) (length trimmed)))
+
+  (defun custom/get-current-indent ()
+	;; get indent level for current line
+	(setq text (custom/get-line))
+	(custom/get-indent text))
+
+  (defun custom/goto-direct-parent-indent ()
+	(interactive)
+	(setq indent-level (custom/get-current-indent))
+	(while (and
+			(/= (forward-line -1) -1)
+			(or
+			(>= (custom/get-current-indent) indent-level)
+			(= (line-beginning-position) (line-end-position))))
+	  ()))
+
+  (defun custom/goto-direct-parent-outdent ()
+	(interactive)
+	(setq indent-level (custom/get-current-indent))
+	(while (and
+			(/= (forward-line 1) 1)
+			(or
+			(>= (custom/get-current-indent) indent-level)
+			(= (line-beginning-position) (line-end-position))))
+	  ()))
+  #+END_SRC
+** open per-project todo file
+   #+BEGIN_SRC emacs-lisp
+   (defun org-projectile-get-project-todo-file (&optional project-path)
+    (if (not project-path)
+	    (setq project-path (projectile-project-root))
+       nil)
+	(let ((path (file-name-as-directory project-path)))
+	  (let ((files
+	        (list
+			      (concat path "TODO.org")
+				  (concat path (projectile-project-name) ".org")
+				  (concat path "project.org"))))
+		(let ((filtered (seq-filter 'file-exists-p files)))
+		  (if (> (length filtered) 0)
+			  (car filtered)
+			(concat path "project.org"))))))
+   #+END_SRC
+
+
