@@ -7,7 +7,20 @@
 ** Filetype associations
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'auto-mode-alist '("\\.pcss\\'" . css-mode))
+     (add-to-list 'auto-mode-alist '("\\.log\\'" . json-mode))
    #+END_SRC
+** Folding
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'origami-parser-alist '(scss-mode . origami-c-style-parser))
+     (add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
+     (add-to-list 'origami-parser-alist '(react-mode . origami-c-style-parser))
+     (add-to-list 'origami-parser-alist '(js2-jsx-mode . origami-c-style-parser))
+     (add-to-list 'origami-parser-alist '(rjsx-mode . origami-c-style-parser))
+     (add-to-list 'origami-parser-alist '(typescript-mode . origami-c-style-parser))
+     (add-to-list 'origami-parser-alist '(typescript-tsx-mode . origami-c-style-parser))
+     (add-to-list 'origami-parser-alist '(tide-mode . origami-c-style-parser))
+     (add-to-list 'origami-parser-alist '(json-mode . origami-c-style-parser))
+     #+END_SRC
 ** Highlight active line
    #+BEGIN_SRC emacs-lisp
    (set-face-attribute 'hl-line nil :background "#4e342e")
@@ -20,16 +33,13 @@
 
      (add-to-list 'org-mode-hook
          (lambda ()
-                 (setq-local indent-tabs-mode nil)))
+           (setq-local indent-tabs-mode nil)))
      (setq highlight-indent-guides-highlighter-function 'custom/highlight-indent-guide)
    #+END_SRC
 ** Whitespaces
    #+BEGIN_SRC emacs-lisp
      (with-eval-after-load 'popup (set-face-attribute 'popup-tip-face nil :background "#544311" :foreground "#ff8700"))
      (setq-default line-spacing 3)
-
-     (add-to-list 'origami-parser-alist '(scss-mode . origami-c-style-parser))
-     (add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
 
      ;; make sure whitespaces are shown in the following modes
      (setq highlight-indent-guides-method 'character)
@@ -50,7 +60,7 @@
 ** Window settings
    Transparency for the window.
    #+BEGIN_SRC emacs-lisp
-   (set-frame-parameter (selected-frame) 'alpha '(95 . 85))
+   (set-frame-parameter (selected-frame) 'alpha '(100 . 95))
    (fringe-mode '(24 . 12))
    #+END_SRC
 * Key bindings
@@ -74,15 +84,17 @@
     (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
     (define-key evil-normal-state-map (kbd "<down>") 'flycheck-next-error)
     (define-key evil-normal-state-map (kbd "<up>") 'flycheck-previous-error)
-    (define-key evil-normal-state-map (kbd "s-j") 'move-text-line-down)
-    (define-key evil-normal-state-map (kbd "s-k") 'move-text-line-up)
+    ;; (define-key evil-normal-state-map (kbd "s-j") 'move-text-line-down)
+    ;; (define-key evil-normal-state-map (kbd "s-k") 'move-text-line-up)
+    (define-key evil-normal-state-map (kbd "M-j") 'move-text-line-down)
+    (define-key evil-normal-state-map (kbd "M-k") 'move-text-line-up)
     (define-key evil-normal-state-map (kbd "<backtab>") 'origami-show-only-node)
     (define-key evil-normal-state-map (kbd "[[") 'custom/goto-direct-parent-indent)
     (define-key evil-normal-state-map (kbd "]]") 'custom/goto-direct-parent-outdent)
 
     (define-key evil-insert-state-map (kbd "s-;") 'yas-expand)
-    (define-key evil-insert-state-map (kbd "s-k") (lambda () (interactive) (evil-previous-line) (evil-end-of-line)))
-    (define-key evil-insert-state-map (kbd "s-j") (lambda () (interactive) (evil-next-line) (evil-beginning-of-line)))
+    (define-key evil-insert-state-map (kbd "M-k") (lambda () (interactive) (evil-previous-line) (evil-end-of-line)))
+    (define-key evil-insert-state-map (kbd "M-j") (lambda () (interactive) (evil-next-line) (evil-first-non-blank)))
     (define-key evil-insert-state-map (kbd "C-j") 'evil-scroll-line-down)
     (define-key evil-insert-state-map (kbd "C-k") 'evil-scroll-line-up)
     (define-key evil-insert-state-map (kbd "C-S-j") (lambda () (interactive) (evil-scroll-line-down 5)))
@@ -105,22 +117,22 @@
 
     (require 'general)
     (general-evil-setup)
-    (general-nmap "m" 
-                  (general-key-dispatch 'self-insert-command
-                   :timeout 0.25
-                   "t" 'evil-window-top
-                   "b" 'evil-window-bottom
-                   "m" '
-                   evil-window-middle))
+    (general-nmap "m"
+      (general-key-dispatch 'self-insert-command
+        :timeout 0.25
+        "t" 'evil-window-top
+        "b" 'evil-window-bottom
+        "m" '
+        evil-window-middle))
 
-      (spacemacs/set-leader-keys
-        "da" 'delete-minibuffer-contents
-        "ca" 'custom/copy-buffer-contents)
+    ;; (spacemacs/set-leader-keys
+    ;;   "da" 'delete-minibuffer-contents
+    ;;   "ca" 'custom/copy-buffer-contents)
 
-      (evil-define-key 'normal coffee-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
-      (evil-define-key 'normal js2-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
-      (evil-define-key 'normal scss-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
-      (evil-define-key 'normal css-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
+    (evil-define-key 'normal coffee-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
+    (evil-define-key 'normal js2-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
+    (evil-define-key 'normal scss-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
+    (evil-define-key 'normal css-mode-map (kbd "<tab>") 'origami-forward-toggle-node)
   #+END_SRC
 ** Key chord escapes
   #+BEGIN_SRC emacs-lisp
@@ -137,6 +149,11 @@
     "fei" 'open-ideas-org-file
     "aop" 'custom/org-projectile-capture)
   #+END_SRC
+** Spacemacs overrides
+   #+BEGIN_SRC emacs-lisp
+   (spacemacs/set-leader-keys
+     "bd" 'custom/kill-buffer)
+   #+END_SRC
 * Packages
   Configuration for used packages.
   #+BEGIN_SRC emacs-lisp
@@ -145,46 +162,86 @@
   #+END_SRC
 ** autosave
   #+BEGIN_SRC emacs-lisp
-  (add-hook 'focus-out-hook '(lambda ()
-                              (if (not (string-match-p "\*" (buffer-name)))
-                                  (save-buffer))))
+    ;; (add-hook 'focus-out-hook '(lambda ()
+    ;;                             (if (not (string-match-p "\*" (buffer-name)))
+    ;;                                 (save-buffer))))
   #+END_SRC
 ** bookmarks
    #+BEGIN_SRC emacs-lisp
      (require 'bm)
-     (define-key evil-normal-state-map (kbd "F3") 'bm-show-all)
      (define-key evil-normal-state-map (kbd "S-m") 'bm-toggle)
      (define-key evil-normal-state-map (kbd "M-m") 'bm-toggle)
      (define-key evil-normal-state-map (kbd "<left>") 'bm-previous)
      (define-key evil-normal-state-map (kbd "<right>") 'bm-next)
 
-     (setq bm-marker 'bm-marker-right)
-     (setq bm-repository-file "~/.emacs.d/bm-repo")
-     (setq bm-restore-repository-on-load t)
-     (setq-default bm-buffer-persistence t)
-     (add-hook 'after-init-hook 'bm-repository-load)
-     (add-hook 'kill-buffer-hook #'bm-buffer-save)
-     (add-hook 'kill-emacs-hook (lambda nil
+     (use-package bm
+       :ensure t
+       :demand t
+       :config
+       (setq bm-marker 'bm-marker-right)
+       (setq bm-restore-repository-on-load t)
+       (setq bm-repository-file "~/.emacs.d/bm-repo")
+       (setq-default bm-buffer-persistence t)
+       (add-hook 'after-init-hook 'bm-repository-load)
+       (add-hook 'kill-buffer-hook #'bm-buffer-save)
+       (add-hook 'kill-emacs-hook (lambda nil
                                     (bm-buffer-save-all)
                                     (bm-repository-save)))
-     (add-hook 'after-save-hook #'bm-buffer-save)
-     (add-hook 'find-file-hooks #'bm-buffer-restore)
-     (set-face-attribute 'bm-persistent-face nil :background "#2196fa")
+       (add-hook 'after-save-hook #'bm-buffer-save)
+       (add-hook 'find-file-hooks #'bm-buffer-restore)
+
+       (set-face-attribute 'bm-persistent-face nil :background "#2e7d32")
+       ;; darker (set-face-attribute 'bm-persistent-face nil :background "#1b5e20")
+       (set-face-attribute 'bm-fringe-persistent-face nil :background "#2e7d32"))
 
      (spacemacs/set-leader-keys
        "bl" 'bm-show-all)
 
    #+END_SRC
+** dimmer
+   #+BEGIN_SRC emacs-lisp
+     (use-package dimmer
+       :custom
+       (dimmer-fraction 0.2)
+       (dimmer-exclusion-regexp-list
+        '(".*Minibuf.*"
+          ".*Neotree.*"
+          ".*Messages.*"
+          ".*Warnings.*"
+          ".*HELM.*"
+          ".*Helm.*"))
+       :config
+       (dimmer-mode t))
+   #+END_SRC
+** doom-modeline
+   #+BEGIN_SRC emacs-lisp
+     (setq doom-modeline-buffer-file-name-style 'file-name)
+
+     (setq doom-modeline-bar-width 2)
+
+     (set-face-attribute 'doom-modeline-evil-normal-state nil :background "#f54c00" :foreground "#ffffff")
+     (set-face-attribute 'doom-modeline-evil-visual-state nil :background "#2196fa" :foreground "#ffffff")
+     (set-face-attribute 'doom-modeline-evil-insert-state nil :background "#4caf50" :foreground "#ffffff")
+
+     (doom-modeline-def-modeline 'minimal-modeline
+       '(bar window-number " " buffer-info-simple)
+       '(remote-host " " major-mode))
+     (doom-modeline-def-modeline 'optimal-modeline
+       '(bar modals " " window-number " " matches buffer-info-simple " " buffer-position " " checker)
+       '(remote-host " " vcs " " buffer-encoding " " major-mode))
+     (doom-modeline-set-modeline 'optimal-modeline t)
+   #+END_SRC
 ** engine mode
    Package to search in browser.
    #+BEGIN_SRC emacs-lisp
-   (require 'engine-mode)
-   (engine-mode 1)
-   (defengine duckduckgo "https://duckduckgo.com/?q=%s" :keybinding "d")
-   (defengine google "https://google.com/search?q=%s" :keybinding "g")
-   (defengine wiki "https://en.wikipedia.org/wiki/Search?search=%s" :keybinding "w")
-   (engine/set-keymap-prefix (kbd "M-/"))
-   (engine/set-keymap-prefix (kbd "S-/"))
+     (require 'engine-mode)
+     (engine-mode 1)
+     (defengine duckduckgo "https://duckduckgo.com/?q=%s" :keybinding "d")
+     (defengine google "https://google.com/search?q=%s" :keybinding "g")
+     (defengine wiki "https://en.wikipedia.org/wiki/Search?search=%s" :keybinding "w")
+     (defengine fontawesome "https://fontawesome.com/icons?d=gallery&m=free&q=%s" :keybinding "f")
+     (engine/set-keymap-prefix (kbd "M-/"))
+     (engine/set-keymap-prefix (kbd "S-/"))
    #+END_SRC
 ** eshell
    #+BEGIN_SRC emacs-lisp
@@ -196,7 +253,7 @@
        (when (and (eshell-search-path "git")
                   (locate-dominating-file pwd ".git"))
          (let ((git-output (shell-command-to-string (concat "cd " pwd " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
-           (propertize (concat " ⤳ "
+           (propertize (concat " ~~> "
                                (if (> (length git-output) 0)
                                    (substring git-output 0 -1)
                                  "(no brancho)")) 'face `(:foreground "green")))))
@@ -215,7 +272,7 @@
      (setq eshell-prompt-function
            (lambda ()
              (concat
-              (propertize "\n⟣━ " 'face `(:foreground "#ffcc66"))
+              (propertize "\n=>> " 'face `(:foreground "#ffcc66"))
               ((lambda (p-lst)
                  (concat
                   (propertize
@@ -258,7 +315,8 @@
    #+END_SRC
 ** flycheck
    #+BEGIN_SRC emacs-lisp
-   (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
+     (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)
+     ;; (add-to-list 'flycheck-eslint-rules-directories "~/")
    #+END_SRC
 ** flyspell auto-correct
    #+BEGIN_SRC emacs-lisp
@@ -268,6 +326,48 @@
    (setq save-abbrevs t)
    (setq-default abbrev-mode t)
    #+END_SRC
+** fira code font
+   #+BEGIN_SRC emacs-lisp
+     (when (window-system)
+       (set-frame-font "Fira Code"))
+     (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+                    (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+                    (36 . ".\\(?:>\\)")
+                    (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+                    (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+                    (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+                    (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+                    (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+                    ;; (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+                    (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+                    (48 . ".\\(?:x[a-zA-Z]\\)")
+                    (58 . ".\\(?:::\\|[:=]\\)")
+                    (59 . ".\\(?:;;\\|;\\)")
+                    (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
+                    (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+                    (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+                    (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+                    (91 . ".\\(?:]\\)")
+                    (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+                    (94 . ".\\(?:=\\)")
+                    (119 . ".\\(?:ww\\)")
+                    (123 . ".\\(?:-\\)")
+                    (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+                    (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
+                    )
+                  ))
+       (dolist (char-regexp alist)
+         (set-char-table-range composition-function-table (car char-regexp)
+                               `([,(cdr char-regexp) 0 font-shape-gstring]))))
+
+     (add-hook 'helm-major-mode-hook
+               (lambda ()
+                 (setq auto-composition-mode nil)))
+   #+END_SRC
+** helm
+#+BEGIN_SRC emacs-lisp
+  (setq helm-boring-buffer-regexp-list '("\\*" "\\` " "\\`\\*helm" "\\`\\*Echo Area" "\\`\\*Minibuf" "\\`\\magit"))
+#+END_SRC
 ** ispell dictionary
    #+BEGIN_SRC emacs-lisp
    ;; (setq ispell-personal-dictionary "~/emacs-config/ispell.eng.pws")
@@ -292,8 +392,8 @@
    #+END_SRC
 ** magit
    #+BEGIN_SRC emacs-lisp
-   (setq-default git-magit-status-fullscreen 1)
-   (setq git-magit-status-fullscreen 1)
+   ;; (setq-default git-magit-status-fullscreen 1)
+   ;; (setq git-magit-status-fullscreen 1)
 
    ;; TODO magit-bury-buffer-function to be changed
    ;; magit-mode-get-buffers is a list of current repo buffers
@@ -321,7 +421,7 @@
      (setq org-agenda-window-setup 'current-window)
 
      ;; remote org files
-     (setq tramp-method "scp")
+     (setq tramp-method "ssh")
      (setq org-tramp-user "carnifex")
      (setq org-remote-host "54.190.201.185")
      (setq org-remote-address (concat "/" tramp-method ":" org-tramp-user "@" org-remote-host ":"))
@@ -360,7 +460,9 @@
                         (org-agenda-show-log t)
                         (org-agenda-log-mode-items '(state))
                         (org-agenda-use-time-grid nil)
+                        (org-agenda-skip-scheduled-if-done t)
                         (org-agenda-skip-function '(org-agenda-skip-entry-if 'regexp "STYLE:\s*habit"))
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "CANCELLED")))
                         (org-agenda-sorting-strategy
                          '(todo-state-down priority-down))
                         (org-habit-show-habits nil)))
@@ -419,7 +521,6 @@
      (setq org-modules '(org-gnus org-habit org-id org-info org-w3m))
 
      (setq org-enforce-todo-dependencies t)
-     (setq org-ellipsis " ▼")
      (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js")
      (setq org-reverse-note-order t)
      (setq org-refile-use-outline-path t)
@@ -429,22 +530,39 @@
                                 (org-work-file :maxlevel . 1)))
      (setq org-outline-path-complete-in-steps nil)
      (setq org-feed-save-after-adding t)
-     (setq org-bullets-bullet-list '("▶"))
-     (setq org-tags-column -140)
 
      (setq org-todo-keywords
            '((sequence "TODO(t)" "IN-PROGRESS(i)" "POSTPONED(p)" "BLOCKED(b)" "|" "DONE(d)" "CANCELLED(c)")))
-      (setq org-todo-keyword-faces
-           '(("TODO" :foreground "dark orange" :family "Monospace")
-             ("IN-PROGRESS" :foreground "light sea green")
-             ("BLOCKED" :foreground "firebrick")
-             ("DONE" :foreground "lime green")
-             ("CANCELLED" :foreground "magenta")
-             ("POSTPONED" :foreground "dodger blue")))
+     (setq org-export-allow-bind-keywords t)
 
-     (add-hook 'org-mode-hook
-               (lambda () (face-remap-add-relative 'default :family "Monospace")))
+     (defun custom/org-customize-visuals ()
+       (setq org-bullets-bullet-list '("▶"))
+       (setq org-ellipsis " ▼")
+       (setq org-tags-column -100)
+       (setq org-todo-keyword-faces
+             '(("TODO" :foreground "goldenrod")
+               ("IN-PROGRESS" :foreground "white" :background "light sea green")
+               ("BLOCKED" :foreground "white" :background "firebrick")
+               ("DONE" :foreground "lime green")
+               ("CANCELLED" :foreground "magenta")
+               ("POSTPONED" :foreground "dodger blue")
+               ("FEATURE" :foreground "deep sky blue")
+               ("BUG" :foreground "orange red")
+               ("DEV" :foreground "violet red")))
+       (face-remap-add-relative 'default :family "Fira Code")
+       (setq org-fontify-done-headline t)
+       (set-face-attribute 'org-headline-done nil :strike-through t)
+       (set-face-attribute 'org-tag nil :foreground "white")
 
+       (set-face-attribute 'org-level-1 nil :weight 'semi-bold :height 1.0)
+       (set-face-attribute 'org-level-2 nil :weight 'semi-bold :height 1.0)
+       (set-face-attribute 'org-level-3 nil :weight 'semi-bold :height 1.0)
+       (set-face-attribute 'org-level-4 nil :weight 'semi-bold :height 1.0)
+       (set-face-attribute 'org-level-5 nil :weight 'semi-bold :height 1.0)
+
+       (hl-todo-mode -1))
+
+     (add-hook 'org-mode-hook 'custom/org-customize-visuals)
    #+END_SRC
 ** org-projectile
    Settings for org-projectile and capture templates
@@ -453,18 +571,25 @@
 ** prettify symbols
    Replace keywords with symbols
    #+BEGIN_SRC emacs-lisp
-   (defun register-prettify ()
-       (progn
-         (push '("function" . ?ƒ) prettify-symbols-alist)
-         (push '("this" . ?@) prettify-symbols-alist)
-         (push '("null" . ?∅) prettify-symbols-alist)
-         (push '("undefined" . ?∄) prettify-symbols-alist)
-         (push '("return" . ?⇐) prettify-symbols-alist)
-         (push '("=>" . ?⇒) prettify-symbols-alist)
-         (push '("prototype" . ?Ω) prettify-symbols-alist)))
- 
-   (add-hook 'web-mode-hook 'register-prettify)
-   (global-prettify-symbols-mode 0)
+     (defun register-prettify ()
+         (progn
+           (push '("function" . ?ƒ) prettify-symbols-alist)
+           (push '("this" . ?@) prettify-symbols-alist)
+           (push '("null" . ?∅) prettify-symbols-alist)
+           (push '("undefined" . ?∄) prettify-symbols-alist)
+           (push '("return" . ?⇐) prettify-symbols-alist)
+           (push '("=>" . ?⇒) prettify-symbols-alist)
+           (push '("prototype" . ?Ω) prettify-symbols-alist)))
+
+     ;; (add-hook 'web-mode-hook 'register-prettify)
+     ;; (global-prettify-symbols-mode 1)
+   #+END_SRC
+** projectile
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'find-file-hook
+               (lambda ()
+                 (when (file-remote-p default-directory)
+                   (setq-local projectile-mode-line "projectile"))))
    #+END_SRC
 ** rainbow mode
    #+BEGIN_SRC emacs-lisp
@@ -479,31 +604,38 @@
    (setq persp-auto-save-opt 0)
    (setq recentf-auto-cleanup 'mode)
    #+END_SRC
+** rsjx-mode
+   #+BEGIN_SRC emacs-lisp
+     (setq sgml-basic-offset 4)
+   #+END_SRC
 ** spaceline
    #+BEGIN_SRC emacs-lisp
-     (use-package all-the-icons)
-     (use-package spaceline-all-the-icons
-       :after spaceline
-       :config (spaceline-all-the-icons-theme))
-     (setq spaceline-all-the-icons-separator-type 'slant)
-     (setq spaceline-all-the-icons-clock-always-visible nil)
+     (defun custom/customize-spaceline ()
+       (use-package all-the-icons)
+       (use-package spaceline-all-the-icons
+         :after spaceline
+         :config (spaceline-all-the-icons-theme))
+       (setq spaceline-all-the-icons-separator-type 'slant)
+       (setq spaceline-all-the-icons-clock-always-visible nil)
 
-     (spaceline-toggle-all-the-icons-hud-off)
-     (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
-     (spaceline-toggle-all-the-icons-bookmark-on)
-     (spaceline-toggle-all-the-icons-time-on)
-     (spaceline-toggle-all-the-icons-position-on)
-     (setq spaceline-all-the-icons-icon-set-git-ahead 'commit)
-     (setq spaceline-all-the-icons-icon-set-window-numbering 'solid)
-     (setq spaceline-all-the-icons-slim-render t)
+       (spaceline-toggle-all-the-icons-hud-off)
+       (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
+       (spaceline-toggle-all-the-icons-bookmark-on)
+       (spaceline-toggle-all-the-icons-time-on)
+       (spaceline-toggle-all-the-icons-position-on)
+       (setq spaceline-all-the-icons-icon-set-git-ahead 'commit)
+       (setq spaceline-all-the-icons-icon-set-window-numbering 'solid)
+       (setq spaceline-all-the-icons-slim-render t)
 
-     (set-face-attribute 'spacemacs-normal-face nil :background "#f54c00" :foreground "#ffffff") 
-     (set-face-attribute 'spacemacs-visual-face nil :background "#2196fa" :foreground "#ffffff") 
-     (set-face-attribute 'spacemacs-insert-face nil :background "#4caf50" :foreground "#ffffff") 
+       (set-face-attribute 'spacemacs-normal-face nil :background "#f54c00" :foreground "#ffffff")
+       (set-face-attribute 'spacemacs-visual-face nil :background "#2196fa" :foreground "#ffffff")
+       (set-face-attribute 'spacemacs-insert-face nil :background "#4caf50" :foreground "#ffffff")
 
-     (setq background-color (face-attribute 'default :background))
-     (set-face-attribute 'powerline-active1 nil :background "#345")
-     (set-face-attribute 'powerline-active2 nil :background background-color)
+       (setq background-color (face-attribute 'default :background))
+       (set-face-attribute 'powerline-active1 nil :background "#345")
+       (set-face-attribute 'powerline-active2 nil :background background-color))
+
+     ;; (custom/customize-spaceline)
    #+END_SRC
 ** tramp
    #+BEGIN_SRC emacs-lisp
@@ -525,13 +657,14 @@
    #+END_SRC
 ** web-mode
    #+BEGIN_SRC emacs-lisp
-   (defun custom/alexa-apml-hook ()
-     (if (string-equal (projectile-project-name) "AlexaApmlAuthoring-Frontend")
-         (setq-local indent-tabs-mode nil)
-       nil))
-   
-   (add-hook 'web-mode-hook 'custom/alexa-apml-hook)
-   (add-hook 'typescript-mode-hook 'custom/alexa-apml-hook)
+     (defun custom/alexa-apml-hook ()
+       (setq web-mode-enable-auto-quoting nil)
+       (if (string-equal (projectile-project-name) "AlexaApmlAuthoring-Frontend")
+           (setq-local indent-tabs-mode nil)
+         nil))
+
+     (add-hook 'web-mode-hook 'custom/alexa-apml-hook)
+     (add-hook 'typescript-mode-hook 'custom/alexa-apml-hook)
    #+END_SRC
 * Functions
 ** fix spelling errors
@@ -763,4 +896,12 @@
      (let ((evil-this-register ?0))
    	   (call-interactively 'evil-paste-after)
    	   (setq kill-ring (cdr kill-ring))))
+   #+END_SRC
+** kill buffer and switch to previous buffer
+   #+BEGIN_SRC emacs-lisp
+     (defun custom/kill-buffer ()
+       (interactive)
+       (let ((current-buffer (buffer-name)))
+             (call-interactively 'spacemacs/alternate-buffer)
+             (kill-buffer current-buffer)))
    #+END_SRC
